@@ -5,14 +5,10 @@ WORKDIR /app
 RUN corepack enable
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
 COPY packages/shared/package.json packages/shared/package.json
 COPY frontend/package.json frontend/package.json
 
 RUN pnpm install
-
-COPY packages/shared packages/shared
-COPY frontend frontend
 
 WORKDIR /app/frontend
 
