@@ -25,7 +25,7 @@ model Doctor {
 }
 
 model Appointment {
-  id          String            @id
+  id          String            @id @default(uuid())
   patientName String
   doctorId    String
   startsAt    DateTime

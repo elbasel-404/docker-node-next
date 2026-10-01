@@ -280,7 +280,7 @@ export type AppointmentScalarWhereWithAggregatesInput = {
 }
 
 export type AppointmentCreateInput = {
-  id: string
+  id?: string
   patientName: string
   startsAt: Date | string
   endsAt: Date | string
@@ -293,7 +293,7 @@ export type AppointmentCreateInput = {
 }
 
 export type AppointmentUncheckedCreateInput = {
-  id: string
+  id?: string
   patientName: string
   doctorId: string
   startsAt: Date | string
@@ -332,7 +332,7 @@ export type AppointmentUncheckedUpdateInput = {
 }
 
 export type AppointmentCreateManyInput = {
-  id: string
+  id?: string
   patientName: string
   doctorId: string
   startsAt: Date | string
@@ -478,7 +478,7 @@ export type AppointmentUpdateOneRequiredWithoutImagingStudyNestedInput = {
 }
 
 export type AppointmentCreateWithoutDoctorInput = {
-  id: string
+  id?: string
   patientName: string
   startsAt: Date | string
   endsAt: Date | string
@@ -490,7 +490,7 @@ export type AppointmentCreateWithoutDoctorInput = {
 }
 
 export type AppointmentUncheckedCreateWithoutDoctorInput = {
-  id: string
+  id?: string
   patientName: string
   startsAt: Date | string
   endsAt: Date | string
@@ -543,7 +543,7 @@ export type AppointmentScalarWhereInput = {
 }
 
 export type AppointmentCreateWithoutImagingStudyInput = {
-  id: string
+  id?: string
   patientName: string
   startsAt: Date | string
   endsAt: Date | string
@@ -555,7 +555,7 @@ export type AppointmentCreateWithoutImagingStudyInput = {
 }
 
 export type AppointmentUncheckedCreateWithoutImagingStudyInput = {
-  id: string
+  id?: string
   patientName: string
   doctorId: string
   startsAt: Date | string
@@ -607,7 +607,7 @@ export type AppointmentUncheckedUpdateWithoutImagingStudyInput = {
 }
 
 export type AppointmentCreateManyDoctorInput = {
-  id: string
+  id?: string
   patientName: string
   startsAt: Date | string
   endsAt: Date | string
