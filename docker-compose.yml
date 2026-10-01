@@ -28,7 +28,6 @@ services:
       - ./backend:/app/backend
       - ./packages/shared:/app/packages/shared
       - /app/node_modules
-      - /app/backend/node_modules
     depends_on:
       - db
     command: pnpm --dir backend dev
@@ -48,7 +47,6 @@ services:
       - ./frontend:/app/frontend
       - ./packages/shared:/app/packages/shared
       - /app/node_modules
-      - /app/frontend/node_modules
       - /app/frontend/.next
     depends_on:
       - backend

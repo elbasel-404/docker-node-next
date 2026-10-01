@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:22-slim
 
 WORKDIR /app
 
@@ -10,8 +10,6 @@ COPY frontend/package.json frontend/package.json
 
 RUN pnpm install
 
-WORKDIR /app/frontend
-
 EXPOSE 3000
 
-CMD ["pnpm", "dev"]
+CMD ["pnpm", "--dir", "frontend", "dev"]
