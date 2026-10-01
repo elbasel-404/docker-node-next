@@ -14,8 +14,8 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.backend
     container_name: express-backend
     restart: unless-stopped
     environment:
@@ -25,16 +25,18 @@ services:
     ports:
       - "${BACKEND_PORT}:4000"
     volumes:
-      - ./backend:/app
+      - ./backend:/app/backend
+      - ./packages/shared:/app/packages/shared
       - /app/node_modules
+      - /app/backend/node_modules
     depends_on:
       - db
-    command: npm run dev
+    command: pnpm --dir backend dev
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.frontend
     container_name: nextjs-frontend
     restart: unless-stopped
     environment:
@@ -43,12 +45,14 @@ services:
     ports:
       - "${FRONTEND_PORT}:3000"
     volumes:
-      - ./frontend:/app
+      - ./frontend:/app/frontend
+      - ./packages/shared:/app/packages/shared
       - /app/node_modules
-      - /app/.next
+      - /app/frontend/node_modules
+      - /app/frontend/.next
     depends_on:
       - backend
-    command: npm run dev
+    command: pnpm --dir frontend dev
 
 volumes:
   postgres_data:
