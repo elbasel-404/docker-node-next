@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-export const doctorSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string(),
+export const createDoctorSchema = z.object({
+  name: z.string().trim().min(1, "Doctor name is required"),
 });
 
-export type Doctor = z.infer<typeof doctorSchema>;
+export type CreateDoctorInput = z.infer<typeof createDoctorSchema>;

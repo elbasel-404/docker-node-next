@@ -1,5 +1,5 @@
 import { AppointmentStatus } from "./generated/prisma/client";
-import { prisma } from "./prisma";
+import { prisma } from "./client";
 
 async function main() {
   console.log("🌱 Seeding database...");

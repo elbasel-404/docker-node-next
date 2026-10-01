@@ -11,6 +11,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
@@ -25,12 +30,11 @@ services:
     ports:
       - "${BACKEND_PORT}:4000"
     volumes:
-      - ./backend:/app/backend
-      - ./packages/shared:/app/packages/shared
-      - /app/node_modules
+      - ./backend/src:/app/backend/src
+      - ./packages/shared/src:/app/packages/shared/src
     depends_on:
-      - db
-    command: pnpm --dir backend dev
+      db:
+        condition: service_healthy
 
   frontend:
     build:
@@ -44,13 +48,11 @@ services:
     ports:
       - "${FRONTEND_PORT}:3000"
     volumes:
-      - ./frontend:/app/frontend
-      - ./packages/shared:/app/packages/shared
-      - /app/node_modules
-      - /app/frontend/.next
+      - ./frontend/src:/app/frontend/src
+      - ./frontend/public:/app/frontend/public
+      - ./packages/shared/src:/app/packages/shared/src
     depends_on:
       - backend
-    command: pnpm --dir frontend dev
 
 volumes:
   postgres_data:
