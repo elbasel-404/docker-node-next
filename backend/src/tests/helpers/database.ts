@@ -12,14 +12,10 @@ export async function createTestDoctor() {
 
 export async function cleanupTestDoctor(doctorId: string) {
   await prisma.appointment.deleteMany({
-    where: {
-      doctorId,
-    },
+    where: { doctorId },
   });
 
   await prisma.doctor.delete({
-    where: {
-      id: doctorId,
-    },
+    where: { id: doctorId },
   });
 }
