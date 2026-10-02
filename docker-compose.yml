@@ -28,6 +28,7 @@ services:
       PORT: 4000
       DATABASE_URL: ${DATABASE_URL}
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN}
+      CLINIC_TIMEZONE: ${CLINIC_TIMEZONE}
     ports:
       - "${BACKEND_PORT}:4000"
     volumes:

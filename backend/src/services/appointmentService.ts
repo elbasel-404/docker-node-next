@@ -10,24 +10,8 @@ import {
 import { prisma } from "../prisma/client.js";
 import { AppError } from "../errors/AppError.js";
 import { isAppointmentConflict } from "../utils/errorCheck.js";
+import { getClinicDayRange } from "../utils/timezone.js";
 import type { Prisma } from "../prisma/generated/prisma/client.js";
-
-function getDayRange(date: string) {
-  // API dates are interpreted as UTC calendar dates.
-  const start = new Date(`${date}T00:00:00.000Z`);
-
-  if (Number.isNaN(start.getTime())) {
-    throw new AppError(400, "INVALID_DATE", "Invalid date.");
-  }
-
-  const end = new Date(start);
-  end.setUTCDate(end.getUTCDate() + 1);
-
-  return {
-    start,
-    end,
-  };
-}
 
 export async function listAppointments(input: AppointmentListQuery) {
   const query = appointmentListQuerySchema.parse(input);
@@ -43,7 +27,7 @@ export async function listAppointments(input: AppointmentListQuery) {
   }
 
   if (query.date) {
-    const { start, end } = getDayRange(query.date);
+    const { start, end } = getClinicDayRange(query.date);
 
     where.startsAt = {
       gte: start,
