@@ -1,11 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { prisma } from "../../prisma/client";
 
-export async function createTestDoctor() {
+export async function createTestDoctor(
+  name: string | undefined = "Test Doctor",
+) {
   return prisma.doctor.create({
     data: {
       id: randomUUID(),
-      name: "Test Doctor",
+      name: name,
     },
   });
 }
