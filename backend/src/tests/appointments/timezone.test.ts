@@ -115,6 +115,7 @@ describe("Timezone-aware appointment filtering", () => {
 
     const appointments = await listAppointments({
       date: "2026-10-02",
+      doctorId,
     });
 
     expect(appointments).toHaveLength(1);

@@ -20,9 +20,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/appointments", appointmentsRouter);
-
 app.use("/api/doctors", doctorsRouter);
-
 app.use("/api/imaging-studies", imagingStudiesRouter);
 
 app.use(notFound);
