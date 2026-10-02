@@ -5,7 +5,22 @@ export function isAppointmentConflict(error: unknown): boolean {
     return false;
   }
 
+  if (error.code !== "P2039") {
+    return false;
+  }
+
+  const driverError = error.meta?.driverAdapterError;
+
+  if (!driverError || typeof driverError !== "object") {
+    return false;
+  }
+
+  const message =
+    "message" in driverError && typeof driverError.message === "string"
+      ? driverError.message
+      : "";
+
   return (
-    error.code === "P2010" && error.message.includes("appointment_no_overlap")
+    message.includes("appointment_no_overlap") || message.includes("23P01")
   );
 }

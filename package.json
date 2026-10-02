@@ -8,7 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:deploy": "docker compose exec backend pnpm --dir backend exec prisma migrate deploy",
-    "db:seed": "docker compose exec backend pnpm --dir backend exec tsx src/prisma/seed.ts"
+    "db:seed": "docker compose exec backend pnpm --dir backend exec tsx src/prisma/seed.ts",
+    "test:backend": "docker compose exec backend pnpm --dir backend exec pnpm test"
   },
   "keywords": [],
   "author": "",
