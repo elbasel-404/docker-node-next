@@ -4,9 +4,6 @@ import { prisma } from "./client";
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // Clear existing seed data.
-  // We'll replace this with a more targeted approach if you
-  // later need to preserve manually-created records.
   await prisma.imagingStudy.deleteMany();
   await prisma.appointment.deleteMany();
   await prisma.doctor.deleteMany();

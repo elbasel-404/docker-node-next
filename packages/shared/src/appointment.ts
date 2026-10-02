@@ -12,9 +12,9 @@ export type AppointmentStatus = z.infer<typeof appointmentStatusSchema>;
 export const createAppointmentSchema = z.object({
   patientName: z.string().trim().min(1, "Patient name is required"),
 
-  doctorId: z.string().uuid("Invalid doctor ID"),
+  doctorId: z.uuid("Invalid doctor ID"),
 
-  startsAt: z.string().datetime({
+  startsAt: z.iso.datetime({
     offset: true,
   }),
 
@@ -34,9 +34,9 @@ export type UpdateAppointmentStatusInput = z.infer<
 >;
 
 export const appointmentListQuerySchema = z.object({
-  date: z.string().date().optional(),
+  date: z.iso.date().optional(),
 
-  doctorId: z.string().uuid().optional(),
+  doctorId: z.uuid().optional(),
 
   status: appointmentStatusSchema.optional(),
 });
