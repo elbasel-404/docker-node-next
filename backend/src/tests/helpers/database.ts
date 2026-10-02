@@ -17,7 +17,7 @@ export async function cleanupTestDoctor(doctorId: string) {
     where: { doctorId },
   });
 
-  await prisma.doctor.delete({
+  await prisma.doctor.deleteMany({
     where: { id: doctorId },
   });
 }

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "../../prisma/client";
 import { createTestDoctor, cleanupTestDoctor } from "../helpers/database";
-import { listDoctors } from "../../services/doctors";
+import { listDoctors } from "../../services/doctorsService";
 
 describe("listDoctors", () => {
   const doctorIds: string[] = [];

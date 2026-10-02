@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listDoctors } from "../services/doctors";
+import { listDoctors } from "../services/doctorsService";
 
 export const doctorsRouter = Router();
 
