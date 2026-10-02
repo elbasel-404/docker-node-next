@@ -4,30 +4,13 @@ import { stat } from "node:fs/promises";
 
 import { prisma } from "../prisma/client.js";
 import { AppError } from "../errors/AppError.js";
+import { getImagingStudy } from "../services/imagingStudyService.js";
 
 export const imagingStudiesRouter = Router();
 
 imagingStudiesRouter.get("/:id", async (req, res, next) => {
   try {
-    const study = await prisma.imagingStudy.findUnique({
-      where: {
-        id: req.params.id,
-      },
-      select: {
-        id: true,
-        appointmentId: true,
-        modality: true,
-        description: true,
-      },
-    });
-
-    if (!study) {
-      throw new AppError(
-        404,
-        "IMAGING_STUDY_NOT_FOUND",
-        "Imaging study not found.",
-      );
-    }
+    const study = await getImagingStudy(req.params.id);
 
     res.json({
       data: study,
