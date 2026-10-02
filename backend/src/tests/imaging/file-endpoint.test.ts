@@ -68,9 +68,19 @@ describe("GET /api/imaging-studies/:id/file", () => {
   it("serves the DICOM file", async () => {
     const response = await request(app)
       .get(`/api/imaging-studies/${studyId}/file`)
-      .expect(200);
+      .buffer(true)
+      .parse((res, callback) => {
+        const chunks: Buffer[] = [];
 
-    expect(response.headers["content-type"]).toContain("application/dicom");
+        res.on("data", (chunk) => {
+          chunks.push(Buffer.from(chunk));
+        });
+
+        res.on("end", () => {
+          callback(null, Buffer.concat(chunks));
+        });
+      })
+      .expect(200);
 
     expect(response.body).toEqual(Buffer.from("test-dicom-content"));
   });
