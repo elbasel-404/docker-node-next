@@ -27,6 +27,7 @@ services:
       NODE_ENV: development
       PORT: 4000
       DATABASE_URL: ${DATABASE_URL}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN}
     ports:
       - "${BACKEND_PORT}:4000"
     volumes:

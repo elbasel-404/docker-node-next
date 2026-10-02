@@ -4,10 +4,15 @@ import { appointmentsRouter } from "./routes/appointments";
 import { errorHandler } from "./middleware/errorHandler";
 import { doctorsRouter } from "./routes/doctors";
 import { imagingStudiesRouter } from "./routes/imagingStudies";
+import { notFound } from "./middleware/notFound";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_ORIGIN ?? "http://localhost:3000",
+  }),
+);
 app.use(express.json());
 
 app.get("/api/health", (_req, res) => {
@@ -20,6 +25,7 @@ app.use("/api/doctors", doctorsRouter);
 
 app.use("/api/imaging-studies", imagingStudiesRouter);
 
+app.use(notFound);
 app.use(errorHandler);
 
 export default app;
