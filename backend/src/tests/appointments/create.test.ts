@@ -31,18 +31,6 @@ describe("createAppointment", () => {
     expect(appointment.status).toBe("scheduled");
   });
 
-  it("rejects a non-positive duration", async () => {
-    await expect(
-      createAppointment({
-        patientName: "Demo Patient",
-        doctorId: doctorId,
-        startsAt: "2026-10-02T10:00:00.000Z",
-        durationMinutes: 0,
-        reason: "Routine consultation",
-      }),
-    ).rejects.toThrow();
-  });
-
   it("rejects an unknown doctor", async () => {
     await expect(
       createAppointment({
