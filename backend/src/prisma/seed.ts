@@ -4,10 +4,6 @@ import { prisma } from "./client";
 async function main() {
   console.log("🌱 Seeding database...");
 
-  await prisma.imagingStudy.deleteMany();
-  await prisma.appointment.deleteMany();
-  await prisma.doctor.deleteMany();
-
   const doctors = await Promise.all([
     prisma.doctor.create({
       data: {

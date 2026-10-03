@@ -16,6 +16,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
 
   backend:
     build:
@@ -37,6 +39,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - app-network
 
   frontend:
     build:
@@ -46,6 +50,7 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: development
+      WATCHPACK_POLLING: "true"
       BACKEND_URL: http://backend:4000
       NEXT_PUBLIC_CLINIC_TIMEZONE: ${CLINIC_TIMEZONE}
     ports:
@@ -57,6 +62,12 @@ services:
       - ./packages/shared/src:/app/packages/shared/src
     depends_on:
       - backend
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
