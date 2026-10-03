@@ -1,11 +1,12 @@
 "use client";
 
+import { AppointmentStatus } from "@repo/shared";
 import { useState } from "react";
 import { updateAppointmentStatusAction } from "../server/updateStatusAction";
 
 type Props = {
   appointmentId: string;
-  status: "scheduled" | "checked_in" | "completed" | "cancelled";
+  status: AppointmentStatus;
 };
 
 export function StatusSelect({ appointmentId, status }: Props) {
@@ -13,7 +14,7 @@ export function StatusSelect({ appointmentId, status }: Props) {
 
   const [error, setError] = useState<string | null>(null);
 
-  async function changeStatus(nextStatus: Props["status"]) {
+  async function handleChange(nextStatus: AppointmentStatus) {
     setPending(true);
     setError(null);
 
@@ -36,7 +37,7 @@ export function StatusSelect({ appointmentId, status }: Props) {
         value={status}
         disabled={pending}
         onChange={(event) =>
-          changeStatus(event.target.value as Props["status"])
+          handleChange(event.target.value as AppointmentStatus)
         }
       >
         <option value="scheduled">Scheduled</option>

@@ -2,14 +2,18 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 
+import type { AppointmentStatus } from "@repo/shared";
+
+type Doctor = {
+  id: string;
+  name: string;
+};
+
 type Props = {
   date: string;
   doctorId?: string;
-  status?: string;
-  doctors: Array<{
-    id: string;
-    name: string;
-  }>;
+  status?: AppointmentStatus;
+  doctors: Doctor[];
 };
 
 export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
@@ -30,18 +34,24 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
 
   return (
     <section>
-      <label>
-        Date
+      <h2>Filters</h2>
+
+      <div>
+        <label htmlFor="filter-date">Date</label>
+
         <input
+          id="filter-date"
           type="date"
           value={date}
           onChange={(event) => updateFilter("date", event.target.value)}
         />
-      </label>
+      </div>
 
-      <label>
-        Doctor
+      <div>
+        <label htmlFor="filter-doctor">Doctor</label>
+
         <select
+          id="filter-doctor"
           value={doctorId ?? ""}
           onChange={(event) => updateFilter("doctorId", event.target.value)}
         >
@@ -53,21 +63,27 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
             </option>
           ))}
         </select>
-      </label>
+      </div>
 
-      <label>
-        Status
+      <div>
+        <label htmlFor="filter-status">Status</label>
+
         <select
+          id="filter-status"
           value={status ?? ""}
           onChange={(event) => updateFilter("status", event.target.value)}
         >
           <option value="">All statuses</option>
+
           <option value="scheduled">Scheduled</option>
+
           <option value="checked_in">Checked in</option>
+
           <option value="completed">Completed</option>
+
           <option value="cancelled">Cancelled</option>
         </select>
-      </label>
+      </div>
     </section>
   );
 }

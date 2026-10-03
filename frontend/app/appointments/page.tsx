@@ -59,10 +59,10 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
       />
 
       <AppointmentList appointments={appointmentsResponse.data} />
-      <CreateAppointmentCard
+      {/* <CreateAppointmentCard
         doctors={doctorsResponse.data}
         defaultDate={date}
-      />
+      /> */}
     </main>
   );
 }
