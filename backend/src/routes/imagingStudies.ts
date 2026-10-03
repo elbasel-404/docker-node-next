@@ -2,9 +2,9 @@ import { Router, type Router as ExpressRouter } from "express";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 
-import { prisma } from "../prisma/client.js";
-import { AppError } from "../errors/AppError.js";
-import { getImagingStudy } from "../services/imagingStudyService.js";
+import { prisma } from "../prisma/client";
+import { AppError } from "../errors/AppError";
+import { getImagingStudy } from "../services/imagingStudyService";
 
 export const imagingStudiesRouter: ExpressRouter = Router();
 

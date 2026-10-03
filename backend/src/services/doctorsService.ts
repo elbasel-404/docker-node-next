@@ -1,6 +1,6 @@
 // src/services/doctorService.ts
 
-import { prisma } from "../prisma/client.js";
+import { prisma } from "../prisma/client";
 
 export async function listDoctors() {
   return prisma.doctor.findMany({

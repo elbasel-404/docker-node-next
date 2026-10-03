@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import request from "supertest";
 import app from "../../app";
 import { createTestDoctor, cleanupTestDoctor } from "../helpers/database";
-import { prisma } from "../../prisma/client.js";
+import { prisma } from "../../prisma/client";
 
 describe("appointment status API", () => {
   let doctorId: string;

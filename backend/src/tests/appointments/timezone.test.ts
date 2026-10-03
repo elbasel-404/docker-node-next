@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { listAppointments } from "../../services/appointmentService";
 import { createTestDoctor, cleanupTestDoctor } from "../helpers/database";
-import { prisma } from "../../prisma/client.js";
+import { prisma } from "../../prisma/client";
 
 describe("Timezone-aware appointment filtering", () => {
   let doctorId: string;

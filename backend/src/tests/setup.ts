@@ -1,6 +1,6 @@
 import { beforeAll, afterAll } from "vitest";
-import { prisma } from "../prisma/client.js";
-import { validateStartupEnv } from "../config/env.js";
+import { prisma } from "../prisma/client";
+import { validateStartupEnv } from "../config/env";
 
 validateStartupEnv();
 

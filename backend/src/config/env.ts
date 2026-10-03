@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AppError } from "../errors/AppError.js";
+import { AppError } from "../errors/AppError";
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1),

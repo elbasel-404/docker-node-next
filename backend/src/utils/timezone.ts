@@ -1,6 +1,6 @@
 import { fromZonedTime } from "date-fns-tz";
-import { validateStartupEnv } from "../config/env.js";
-import { AppError } from "../errors/AppError.js";
+import { validateStartupEnv } from "../config/env";
+import { AppError } from "../errors/AppError";
 
 export function getClinicTimezone(): string {
   return validateStartupEnv().CLINIC_TIMEZONE;

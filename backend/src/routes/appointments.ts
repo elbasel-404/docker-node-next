@@ -11,7 +11,7 @@ import {
   getAppointment,
   listAppointments,
   updateAppointmentStatus,
-} from "../services/appointmentService.js";
+} from "../services/appointmentService";
 
 export const appointmentsRouter: ExpressRouter = Router();
 

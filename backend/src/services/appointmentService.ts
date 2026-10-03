@@ -7,11 +7,11 @@ import {
   type UpdateAppointmentStatusInput,
 } from "@repo/shared";
 
-import { prisma } from "../prisma/client.js";
-import { AppError } from "../errors/AppError.js";
-import { Prisma } from "../prisma/generated/prisma/client.js";
-import { isAppointmentConflict } from "../utils/errorCheck.js";
-import { getClinicDayRange } from "../utils/timezone.js";
+import { prisma } from "../prisma/client";
+import { AppError } from "../errors/AppError";
+import { Prisma } from "../prisma/generated/prisma/client";
+import { isAppointmentConflict } from "../utils/errorCheck";
+import { getClinicDayRange } from "../utils/timezone";
 
 export async function listAppointments(input: AppointmentListQuery) {
   const query = appointmentListQuerySchema.parse(input);

@@ -1,5 +1,5 @@
 import { fromZonedTime } from "date-fns-tz";
-import { validateStartupEnv } from "../config/env.js";
+import { validateStartupEnv } from "../config/env";
 import { AppointmentStatus } from "./generated/prisma/client";
 import { prisma } from "./client";
 

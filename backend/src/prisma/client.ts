@@ -2,7 +2,7 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { z } from "zod";
 import { PrismaClient } from "./generated/prisma/client";
-import { validateStartupEnv } from "../config/env.js";
+import { validateStartupEnv } from "../config/env";
 
 const connectionStringSchema = z.string().min(1);
 const connectionString = connectionStringSchema.parse(

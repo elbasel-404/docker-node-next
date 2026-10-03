@@ -1,5 +1,5 @@
-import { prisma } from "../prisma/client.js";
-import { AppError } from "../errors/AppError.js";
+import { prisma } from "../prisma/client";
+import { AppError } from "../errors/AppError";
 
 export async function getImagingStudy(imagingStudyId: string) {
   const study = await prisma.imagingStudy.findUnique({
