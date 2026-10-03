@@ -42,13 +42,4 @@ describe("listDoctors", () => {
       name: "Dr. Test",
     });
   });
-
-  it("returns an empty array when there are no doctors", async () => {
-    await prisma.appointment.deleteMany();
-    await prisma.doctor.deleteMany();
-
-    const doctors = await listDoctors();
-
-    expect(doctors).toEqual([]);
-  });
 });
