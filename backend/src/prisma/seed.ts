@@ -1,8 +1,9 @@
 import { fromZonedTime } from "date-fns-tz";
+import { validateStartupEnv } from "../config/env.js";
 import { AppointmentStatus } from "./generated/prisma/client";
 import { prisma } from "./client";
 
-const CLINIC_TIMEZONE = process.env.CLINIC_TIMEZONE ?? "Africa/Cairo";
+const CLINIC_TIMEZONE = validateStartupEnv().CLINIC_TIMEZONE;
 
 function getClinicDateKey(date = new Date()) {
   return new Intl.DateTimeFormat("en-CA", {

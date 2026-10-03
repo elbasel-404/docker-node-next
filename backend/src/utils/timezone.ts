@@ -1,16 +1,10 @@
 import { fromZonedTime } from "date-fns-tz";
+import { validateStartupEnv } from "../config/env.js";
 import { AppError } from "../errors/AppError.js";
 
-const CLINIC_TIMEZONE = process.env.CLINIC_TIMEZONE;
+const CLINIC_TIMEZONE = validateStartupEnv().CLINIC_TIMEZONE;
 
 export function getClinicTimezone(): string {
-  if (!CLINIC_TIMEZONE) {
-    throw new AppError(
-      500,
-      "MISSING_CLINIC_TIMEZONE",
-      "Clinic timezone is not configured.",
-    );
-  }
   return CLINIC_TIMEZONE;
 }
 

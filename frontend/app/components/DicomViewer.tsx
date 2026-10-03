@@ -94,6 +94,10 @@ async function checkFileExists(fileUrl: string) {
   if (response.status === 404) {
     throw new Error("FILE_NOT_FOUND");
   }
+
+  if (!response.ok) {
+    throw new Error("FILE_LOAD_FAILED");
+  }
 }
 
 export function DicomViewer({ fileUrl, modality, description }: Props) {
@@ -128,7 +132,12 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
           fileUrl,
           window.location.origin,
         ).toString();
+
         await checkFileExists(absoluteFileUrl);
+
+        if (cancelled || !elementRef.current) {
+          return;
+        }
 
         const renderingEngine = new RenderingEngine(RENDERING_ENGINE_ID);
         renderingEngineRef.current = renderingEngine;
@@ -190,10 +199,11 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
         }
 
         const message =
-          caughtError instanceof Error &&
-          caughtError.message === "FILE_NOT_FOUND"
+          caughtError instanceof Error && caughtError.message === "FILE_NOT_FOUND"
             ? "Unable to find the DICOM file."
-            : "The DICOM file could not be decoded or rendered.";
+            : caughtError instanceof Error && caughtError.message === "FILE_LOAD_FAILED"
+              ? "The DICOM file could not be loaded."
+              : "The DICOM file could not be decoded or rendered.";
 
         setLoading(false);
         setError(message);
@@ -335,7 +345,7 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
             <div>
               <strong>Dimensions</strong>
               <div>
-                {metadata.rows} x {metadata.columns}
+                {(metadata.columns ?? "Unknown")} × {(metadata.rows ?? "Unknown")}
               </div>
             </div>
           </div>

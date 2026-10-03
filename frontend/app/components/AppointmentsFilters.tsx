@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 
 import type { AppointmentStatus } from "@repo/shared";
 
@@ -19,6 +20,7 @@ type Props = {
 export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
   function updateFilter(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -29,12 +31,17 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
       params.delete(key);
     }
 
-    router.push(`/appointments?${params.toString()}`);
+    startTransition(() => {
+      router.push(`/appointments?${params.toString()}`);
+    });
   }
 
   function clearFilters() {
     const params = new URLSearchParams();
-    router.push(`/appointments?${params.toString()}`);
+
+    startTransition(() => {
+      router.push(`/appointments?${params.toString()}`);
+    });
   }
 
   return (
@@ -48,6 +55,7 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
           id="filter-date"
           type="date"
           value={date}
+          disabled={isPending}
           onChange={(event) => updateFilter("date", event.target.value)}
         />
       </div>
@@ -58,6 +66,7 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
         <select
           id="filter-doctor"
           value={doctorId ?? ""}
+          disabled={isPending}
           onChange={(event) => updateFilter("doctorId", event.target.value)}
         >
           <option value="">All doctors</option>
@@ -76,6 +85,7 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
         <select
           id="filter-status"
           value={status ?? ""}
+          disabled={isPending}
           onChange={(event) => updateFilter("status", event.target.value)}
         >
           <option value="">All statuses</option>
@@ -88,7 +98,7 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
 
           <option value="cancelled">Cancelled</option>
         </select>
-        <button type="button" onClick={clearFilters}>
+        <button type="button" onClick={clearFilters} disabled={isPending}>
           clear filters
         </button>
       </div>
