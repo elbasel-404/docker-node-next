@@ -1,5 +1,3 @@
-// frontend/src/components/AppointmentList.tsx
-
 import Link from "next/link";
 
 import { StatusSelect } from "./StatusSelect";
