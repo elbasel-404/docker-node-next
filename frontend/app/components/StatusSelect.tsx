@@ -1,7 +1,8 @@
 "use client";
 
 import { AppointmentStatus } from "@repo/shared";
-import { useEffect, useState, useTransition } from "react";
+import { useTransition } from "react";
+import { toast } from "sonner";
 import { updateAppointmentStatusAction } from "../server/actions/updateStatusAction";
 
 type Props = {
@@ -12,32 +13,19 @@ type Props = {
 
 export function StatusSelect({ appointmentId, status, patientName }: Props) {
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!success) return;
-
-    const timer = setTimeout(() => setSuccess(null), 3000);
-
-    return () => clearTimeout(timer);
-  }, [success]);
 
   async function handleChange(nextStatus: AppointmentStatus) {
-    setError(null);
-    setSuccess(null);
-
     startTransition(async () => {
       const result = await updateAppointmentStatusAction(appointmentId, {
         status: nextStatus,
       });
 
       if (!result.success) {
-        setError(result.message);
+        toast.error(result.message);
         return;
       }
 
-      setSuccess("Status updated");
+      toast.success("Status updated");
     });
   }
 
@@ -62,20 +50,6 @@ export function StatusSelect({ appointmentId, status, patientName }: Props) {
           <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>
         </select>
-      </div>
-
-      <div className="status-msg">
-        {isPending && <span className="muted">Saving…</span>}
-        {error && (
-          <span className="error" role="alert">
-            {error}
-          </span>
-        )}
-        {success && (
-          <span className="ok" role="status">
-            {success}
-          </span>
-        )}
       </div>
     </div>
   );
