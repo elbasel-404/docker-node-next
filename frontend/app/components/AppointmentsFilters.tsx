@@ -83,6 +83,16 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
 
           <option value="cancelled">Cancelled</option>
         </select>
+        <button
+          onClick={() => {
+            updateFilter("date", "");
+            updateFilter("doctorId", "");
+            updateFilter("status", "");
+            router.push("/appointments");
+          }}
+        >
+          clear filters
+        </button>
       </div>
     </section>
   );

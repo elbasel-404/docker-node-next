@@ -1,16 +1,5 @@
-import { getDoctors } from "./server/lib/doctor";
+import { redirect } from "next/navigation";
 
-export default async function Home() {
-  const { data: doctors } = await getDoctors();
-
-  return (
-    <div>
-      {doctors.map((doctor: any) => (
-        <div key={doctor.id}>
-          <h2>{doctor.name}</h2>
-          <p>{doctor.specialty}</p>
-        </div>
-      ))}
-    </div>
-  );
+export default function HomePage() {
+  redirect("/appointments");
 }
