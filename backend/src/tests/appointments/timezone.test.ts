@@ -55,6 +55,7 @@ describe("Timezone-aware appointment filtering", () => {
     // Filter for appointments on Oct 2 in Cairo timezone
     const appointments = await listAppointments({
       date: "2026-10-02",
+      doctorId,
     });
 
     // Should find all three appointments (they all fall within Oct 2 in Cairo)
@@ -94,6 +95,7 @@ describe("Timezone-aware appointment filtering", () => {
     // Filter for appointments on Oct 2 in Cairo timezone
     const appointments = await listAppointments({
       date: "2026-10-02",
+      doctorId,
     });
 
     // Should not find any appointments (both are on adjacent days in Cairo)

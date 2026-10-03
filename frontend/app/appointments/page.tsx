@@ -1,7 +1,7 @@
 import {
   AppointmentFilters,
+  AppointmentForm,
   AppointmentList,
-  CreateAppointmentCard,
 } from "../components";
 import { getAppointments } from "../server/appointment";
 import { getDoctors } from "../server/doctor";
@@ -65,12 +65,10 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
         doctors={doctorsResponse.data}
       />
 
-      {/* <CreateAppointmentCard
-        doctors={doctorsResponse.data}
-        defaultDate={date}
-      /> */}
-
       <AppointmentList appointments={appointmentsResponse.data} />
+
+      <hr />
+      <AppointmentForm defaultDate={date} doctors={doctorsResponse.data} />
     </main>
   );
 }
