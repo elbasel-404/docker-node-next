@@ -46,13 +46,14 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: development
-      BACKEND_URL: http://localhost:${BACKEND_PORT}
+      BACKEND_URL: http://backend:4000
       NEXT_PUBLIC_CLINIC_TIMEZONE: ${CLINIC_TIMEZONE}
     ports:
       - "${FRONTEND_PORT}:3000"
     volumes:
       - ./frontend:/app/frontend
-      - ./frontend/public:/app/frontend/public
+      - /app/frontend/node_modules
+      - /app/frontend/.next
       - ./packages/shared/src:/app/packages/shared/src
     depends_on:
       - backend
