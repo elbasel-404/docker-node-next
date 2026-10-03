@@ -54,6 +54,31 @@ export async function listAppointments(input: AppointmentListQuery) {
   });
 }
 
+export async function getAppointment(appointmentId: string) {
+  const appointment = await prisma.appointment.findUnique({
+    where: {
+      id: appointmentId,
+    },
+    include: {
+      doctor: true,
+      imagingStudy: {
+        select: {
+          id: true,
+          appointmentId: true,
+          modality: true,
+          description: true,
+        },
+      },
+    },
+  });
+
+  if (!appointment) {
+    throw new AppError(404, "APPOINTMENT_NOT_FOUND", "Appointment not found.");
+  }
+
+  return appointment;
+}
+
 export async function createAppointment(input: CreateAppointmentInput) {
   const data = createAppointmentSchema.parse(input);
 

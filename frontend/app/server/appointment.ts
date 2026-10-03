@@ -54,6 +54,30 @@ export async function getAppointments(query: AppointmentListQuery) {
   );
 }
 
+export async function getAppointment(id: string) {
+  return request<{
+    data: {
+      id: string;
+      patientName: string;
+      doctor: {
+        id: string;
+        name: string;
+      };
+      startsAt: string;
+      endsAt: string;
+      status: "scheduled" | "checked_in" | "completed" | "cancelled";
+      reason: string;
+      imagingStudy: {
+        id: string;
+        appointmentId: string;
+        modality: string;
+        description: string | null;
+      } | null;
+    };
+  }>(`/api/appointments/${id}`, {
+    cache: "no-store",
+  });
+}
 export async function createAppointment(input: CreateAppointmentInput) {
   return request("/api/appointments", {
     method: "POST",

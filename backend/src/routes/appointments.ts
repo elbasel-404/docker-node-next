@@ -8,6 +8,7 @@ import {
 
 import {
   createAppointment,
+  getAppointment,
   listAppointments,
   updateAppointmentStatus,
 } from "../services/appointmentService.js";
@@ -22,6 +23,18 @@ appointmentsRouter.get("/", async (req, res, next) => {
 
     res.json({
       data: appointments,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+appointmentsRouter.get("/:id", async (req, res, next) => {
+  try {
+    const appointment = await getAppointment(req.params.id);
+
+    res.json({
+      data: appointment,
     });
   } catch (error) {
     next(error);

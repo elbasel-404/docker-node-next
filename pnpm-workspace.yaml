@@ -2,3 +2,5 @@ packages:
   - "backend"
   - "frontend"
   - "packages/*"
+allowBuilds:
+  core-js-pure: true

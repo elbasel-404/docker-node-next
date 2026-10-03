@@ -1,6 +1,3 @@
-FEAT: "BASIC FRONT & BACKEND"
-NEXT: Implement DICOM
-
 # Clinic Appointment System
 
 A full-stack application for managing clinic appointments with multi-doctor scheduling and imaging study integration.
