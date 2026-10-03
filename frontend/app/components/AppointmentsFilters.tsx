@@ -1,14 +1,10 @@
 "use client";
 
+import { type Doctor } from "@repo/shared";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 
 import type { AppointmentStatus } from "@repo/shared";
-
-type Doctor = {
-  id: string;
-  name: string;
-};
 
 type Props = {
   date: string;

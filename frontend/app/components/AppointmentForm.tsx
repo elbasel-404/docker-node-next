@@ -1,13 +1,9 @@
 "use client";
 
+import type { Doctor } from "@repo/shared";
 import { useState } from "react";
 import { createAppointmentAction } from "../server/actions/createAppointmentAction";
 import { clinicDateTimeToIso } from "../utils/timezone";
-
-type Doctor = {
-  id: string;
-  name: string;
-};
 
 type Props = {
   doctors: Doctor[];
@@ -49,7 +45,6 @@ export function AppointmentForm({ doctors, defaultDate }: Props) {
 
       setSuccess("Appointment created successfully.");
 
-      // Clear only after successful creation.
       setPatientName("");
       setReason("");
     } finally {

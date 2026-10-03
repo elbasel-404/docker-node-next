@@ -1,7 +1,5 @@
 import {
-  appointmentListQuerySchema,
-  createAppointmentSchema,
-  updateAppointmentStatusSchema,
+  type Appointment,
   type AppointmentListQuery,
   type CreateAppointmentInput,
   type UpdateAppointmentStatusInput,
@@ -13,8 +11,45 @@ import { Prisma } from "../prisma/generated/prisma/client";
 import { isAppointmentConflict } from "../utils/errorCheck";
 import { getClinicDayRange } from "../utils/timezone";
 
+function toAppointmentDto(
+  appointment: Prisma.AppointmentGetPayload<{
+    include: {
+      doctor: true;
+      imagingStudy: {
+        select: {
+          id: true;
+          appointmentId: true;
+          modality: true;
+          description: true;
+        };
+      };
+    };
+  }>,
+): Appointment {
+  return {
+    id: appointment.id,
+    patientName: appointment.patientName,
+    doctor: {
+      id: appointment.doctor.id,
+      name: appointment.doctor.name,
+    },
+    startsAt: appointment.startsAt.toISOString(),
+    endsAt: appointment.endsAt.toISOString(),
+    status: appointment.status,
+    reason: appointment.reason,
+    imagingStudy: appointment.imagingStudy
+      ? {
+          id: appointment.imagingStudy.id,
+          appointmentId: appointment.imagingStudy.appointmentId,
+          modality: appointment.imagingStudy.modality,
+          description: appointment.imagingStudy.description,
+        }
+      : null,
+  };
+}
+
 export async function listAppointments(input: AppointmentListQuery) {
-  const query = appointmentListQuerySchema.parse(input);
+  const query = input;
 
   const where: Prisma.AppointmentWhereInput = {};
 
@@ -35,7 +70,7 @@ export async function listAppointments(input: AppointmentListQuery) {
     };
   }
 
-  return prisma.appointment.findMany({
+  const appointments = await prisma.appointment.findMany({
     where,
     include: {
       doctor: true,
@@ -52,6 +87,8 @@ export async function listAppointments(input: AppointmentListQuery) {
       startsAt: "asc",
     },
   });
+
+  return appointments.map(toAppointmentDto);
 }
 
 export async function getAppointment(appointmentId: string) {
@@ -76,35 +113,16 @@ export async function getAppointment(appointmentId: string) {
     throw new AppError(404, "APPOINTMENT_NOT_FOUND", "Appointment not found.");
   }
 
-  return appointment;
+  return toAppointmentDto(appointment);
 }
 
 export async function createAppointment(input: CreateAppointmentInput) {
-  const data = createAppointmentSchema.parse(input);
-
-  const startsAt = new Date(data.startsAt);
-
-  if (Number.isNaN(startsAt.getTime())) {
-    throw new AppError(
-      400,
-      "INVALID_START_TIME",
-      "Invalid appointment start time.",
-    );
-  }
-
-  const endsAt = new Date(startsAt.getTime() + data.durationMinutes * 60_000);
-
-  if (endsAt <= startsAt) {
-    throw new AppError(
-      400,
-      "INVALID_DURATION",
-      "Appointment duration must be positive.",
-    );
-  }
+  const startsAt = new Date(input.startsAt);
+  const endsAt = new Date(startsAt.getTime() + input.durationMinutes * 60_000);
 
   const doctor = await prisma.doctor.findUnique({
     where: {
-      id: data.doctorId,
+      id: input.doctorId,
     },
   });
 
@@ -113,18 +131,28 @@ export async function createAppointment(input: CreateAppointmentInput) {
   }
 
   try {
-    return await prisma.appointment.create({
+    const appointment = await prisma.appointment.create({
       data: {
-        patientName: data.patientName,
-        doctorId: data.doctorId,
+        patientName: input.patientName,
+        doctorId: input.doctorId,
         startsAt,
         endsAt,
-        reason: data.reason,
+        reason: input.reason,
       },
       include: {
         doctor: true,
+        imagingStudy: {
+          select: {
+            id: true,
+            appointmentId: true,
+            modality: true,
+            description: true,
+          },
+        },
       },
     });
+
+    return toAppointmentDto(appointment);
   } catch (error) {
     if (isAppointmentConflict(error)) {
       throw new AppError(
@@ -142,15 +170,13 @@ export async function updateAppointmentStatus(
   appointmentId: string,
   input: UpdateAppointmentStatusInput,
 ) {
-  const data = updateAppointmentStatusSchema.parse(input);
-
   try {
-    return await prisma.appointment.update({
+    const appointment = await prisma.appointment.update({
       where: {
         id: appointmentId,
       },
       data: {
-        status: data.status,
+        status: input.status,
       },
       include: {
         doctor: true,
@@ -164,6 +190,8 @@ export async function updateAppointmentStatus(
         },
       },
     });
+
+    return toAppointmentDto(appointment);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {

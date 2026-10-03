@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import { doctorSchema } from "./doctor";
+import { imagingStudySchema } from "./imaging";
+
 export const appointmentStatusSchema = z.enum([
   "scheduled",
   "checked_in",
@@ -48,3 +51,24 @@ export const appointmentListQuerySchema = z.object({
 });
 
 export type AppointmentListQuery = z.infer<typeof appointmentListQuerySchema>;
+
+export const appointmentSchema = z.object({
+  id: z.uuid(),
+  patientName: z.string().trim().min(1),
+  doctor: doctorSchema,
+  startsAt: z.iso.datetime({ offset: true }),
+  endsAt: z.iso.datetime({ offset: true }),
+  status: appointmentStatusSchema,
+  reason: z.string().trim().min(1),
+  imagingStudy: imagingStudySchema.nullable(),
+});
+
+export type Appointment = z.infer<typeof appointmentSchema>;
+
+export const appointmentListResponseSchema = z.object({
+  data: z.array(appointmentSchema),
+});
+
+export const appointmentDetailResponseSchema = z.object({
+  data: appointmentSchema,
+});

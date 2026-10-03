@@ -16,12 +16,12 @@ CREATE TABLE "Appointment" (
     "id" TEXT NOT NULL,
     "patientName" TEXT NOT NULL,
     "doctorId" TEXT NOT NULL,
-    "startsAt" TIMESTAMP(3) NOT NULL,
-    "endsAt" TIMESTAMP(3) NOT NULL,
+    "startsAt" TIMESTAMPTZ(3) NOT NULL,
+    "endsAt" TIMESTAMPTZ(3) NOT NULL,
     "status" "AppointmentStatus" NOT NULL DEFAULT 'scheduled',
     "reason" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "Appointment_pkey" PRIMARY KEY ("id")
 );
@@ -33,8 +33,8 @@ CREATE TABLE "ImagingStudy" (
     "modality" TEXT NOT NULL,
     "description" TEXT,
     "dicomFilePath" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "ImagingStudy_pkey" PRIMARY KEY ("id")
 );
@@ -57,15 +57,18 @@ ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_doctorId_fkey" FOREIGN KEY
 -- AddForeignKey
 ALTER TABLE "ImagingStudy" ADD CONSTRAINT "ImagingStudy_appointmentId_fkey" FOREIGN KEY ("appointmentId") REFERENCES "Appointment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+-- Range invariant for appointment times.
+ALTER TABLE "Appointment"
+ADD CONSTRAINT "Appointment_ends_after_starts_check"
+CHECK ("endsAt" > "startsAt");
 
--- Constraint to prevent overlapping appointments for the same doctor
-
+-- Constraint to prevent overlapping appointments for the same doctor.
 CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 ALTER TABLE "Appointment"
 ADD CONSTRAINT "appointment_no_overlap"
 EXCLUDE USING gist (
   "doctorId" WITH =,
-  tsrange("startsAt", "endsAt", '[)') WITH &&
+  tstzrange("startsAt", "endsAt", '[)') WITH &&
 )
 WHERE ("status" <> 'cancelled');

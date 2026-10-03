@@ -24,9 +24,9 @@ describe("createAppointment", () => {
 
     expect(appointment.patientName).toBe("Demo Patient");
 
-    expect(appointment.startsAt).toEqual(new Date("2026-10-02T10:00:00.000Z"));
+    expect(appointment.startsAt).toBe("2026-10-02T10:00:00.000Z");
 
-    expect(appointment.endsAt).toEqual(new Date("2026-10-02T10:30:00.000Z"));
+    expect(appointment.endsAt).toBe("2026-10-02T10:30:00.000Z");
 
     expect(appointment.status).toBe("scheduled");
   });

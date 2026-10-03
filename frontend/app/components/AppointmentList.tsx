@@ -1,25 +1,8 @@
+import { type Appointment } from "@repo/shared";
 import Link from "next/link";
 
 import { StatusSelect } from "./StatusSelect";
 import { formatAppointmentTime } from "../utils/timezone";
-
-type Appointment = {
-  id: string;
-  patientName: string;
-  doctor: {
-    id: string;
-    name: string;
-  };
-  startsAt: string;
-  endsAt: string;
-  status: "scheduled" | "checked_in" | "completed" | "cancelled";
-  reason: string;
-  imagingStudy: {
-    id: string;
-    modality: string;
-    description: string | null;
-  } | null;
-};
 
 export function AppointmentList({
   appointments,

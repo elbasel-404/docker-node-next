@@ -15,56 +15,40 @@ import {
 
 export const appointmentsRouter: ExpressRouter = Router();
 
-appointmentsRouter.get("/", async (req, res, next) => {
-  try {
-    const query = appointmentListQuerySchema.parse(req.query);
+appointmentsRouter.get("/", async (req, res) => {
+  const query = appointmentListQuerySchema.parse(req.query);
 
-    const appointments = await listAppointments(query);
+  const appointments = await listAppointments(query);
 
-    res.json({
-      data: appointments,
-    });
-  } catch (error) {
-    next(error);
-  }
+  res.json({
+    data: appointments,
+  });
 });
 
-appointmentsRouter.get("/:id", async (req, res, next) => {
-  try {
-    const appointment = await getAppointment(req.params.id);
+appointmentsRouter.get("/:id", async (req, res) => {
+  const appointment = await getAppointment(req.params.id);
 
-    res.json({
-      data: appointment,
-    });
-  } catch (error) {
-    next(error);
-  }
+  res.json({
+    data: appointment,
+  });
 });
 
-appointmentsRouter.post("/", async (req, res, next) => {
-  try {
-    const input = createAppointmentSchema.parse(req.body);
+appointmentsRouter.post("/", async (req, res) => {
+  const input = createAppointmentSchema.parse(req.body);
 
-    const appointment = await createAppointment(input);
+  const appointment = await createAppointment(input);
 
-    res.status(201).json({
-      data: appointment,
-    });
-  } catch (error) {
-    next(error);
-  }
+  res.status(201).json({
+    data: appointment,
+  });
 });
 
-appointmentsRouter.patch("/:id/status", async (req, res, next) => {
-  try {
-    const input = updateAppointmentStatusSchema.parse(req.body);
+appointmentsRouter.patch("/:id/status", async (req, res) => {
+  const input = updateAppointmentStatusSchema.parse(req.body);
 
-    const appointment = await updateAppointmentStatus(req.params.id, input);
+  const appointment = await updateAppointmentStatus(req.params.id, input);
 
-    res.json({
-      data: appointment,
-    });
-  } catch (error) {
-    next(error);
-  }
+  res.json({
+    data: appointment,
+  });
 });

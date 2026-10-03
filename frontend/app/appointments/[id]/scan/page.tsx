@@ -1,4 +1,5 @@
 import { DicomViewer } from "@/app/components/DicomViewer";
+import { ApiRequestError } from "@/app/server/ApiRequestError";
 import { getAppointment } from "@/app/server/appointment";
 import { getImagingStudy } from "@/app/server/imaging-study";
 import Link from "next/link";
@@ -10,19 +11,31 @@ type Props = {
   }>;
 };
 
+async function orNotFound<T>(promise: Promise<T>): Promise<T> {
+  try {
+    return await promise;
+  } catch (error) {
+    if (error instanceof ApiRequestError && error.status === 404) {
+      notFound();
+    }
+
+    throw error;
+  }
+}
+
 export default async function ScanPage({ params }: Props) {
   const { id } = await params;
 
-  const appointmentResponse = await getAppointment(id);
-
+  const appointmentResponse = await orNotFound(getAppointment(id));
   const appointment = appointmentResponse.data;
 
   if (!appointment.imagingStudy) {
     notFound();
   }
 
-  const imagingResponse = await getImagingStudy(appointment.imagingStudy.id);
-
+  const imagingResponse = await orNotFound(
+    getImagingStudy(appointment.imagingStudy.id),
+  );
   const study = imagingResponse.data;
 
   return (

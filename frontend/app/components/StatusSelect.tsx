@@ -1,7 +1,7 @@
 "use client";
 
 import { AppointmentStatus } from "@repo/shared";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { updateAppointmentStatusAction } from "../server/actions/updateStatusAction";
 
 type Props = {
@@ -14,6 +14,14 @@ export function StatusSelect({ appointmentId, status, patientName }: Props) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!success) return;
+
+    const timer = setTimeout(() => setSuccess(null), 3000);
+
+    return () => clearTimeout(timer);
+  }, [success]);
 
   async function handleChange(nextStatus: AppointmentStatus) {
     setError(null);

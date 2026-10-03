@@ -8,63 +8,54 @@ import { getImagingStudy } from "../services/imagingStudyService";
 
 export const imagingStudiesRouter: ExpressRouter = Router();
 
-imagingStudiesRouter.get("/:id", async (req, res, next) => {
-  try {
-    const study = await getImagingStudy(req.params.id);
+imagingStudiesRouter.get("/:id", async (req, res) => {
+  const study = await getImagingStudy(req.params.id);
 
-    res.json({
-      data: study,
-    });
-  } catch (error) {
-    next(error);
-  }
+  res.json({
+    data: study,
+  });
 });
 
-imagingStudiesRouter.get("/:id/file", async (req, res, next) => {
-  try {
-    const study = await prisma.imagingStudy.findUnique({
-      where: {
-        id: req.params.id,
-      },
-      select: {
-        dicomFilePath: true,
-      },
-    });
+imagingStudiesRouter.get("/:id/file", async (req, res) => {
+  const study = await prisma.imagingStudy.findUnique({
+    where: {
+      id: req.params.id,
+    },
+    select: {
+      dicomFilePath: true,
+    },
+  });
 
-    if (!study) {
-      throw new AppError(
-        404,
-        "IMAGING_STUDY_NOT_FOUND",
-        "Imaging study not found.",
-      );
-    }
-
-    let fileStats;
-
-    try {
-      fileStats = await stat(study.dicomFilePath);
-    } catch {
-      throw new AppError(
-        404,
-        "DICOM_FILE_NOT_FOUND",
-        "The DICOM file could not be found.",
-      );
-    }
-
-    if (!fileStats.isFile()) {
-      throw new AppError(
-        404,
-        "DICOM_FILE_NOT_FOUND",
-        "The DICOM file could not be found.",
-      );
-    }
-
-    res.setHeader("Content-Type", "application/dicom");
-
-    res.setHeader("Content-Length", fileStats.size);
-
-    createReadStream(study.dicomFilePath).pipe(res);
-  } catch (error) {
-    next(error);
+  if (!study) {
+    throw new AppError(
+      404,
+      "IMAGING_STUDY_NOT_FOUND",
+      "Imaging study not found.",
+    );
   }
+
+  let fileStats;
+
+  try {
+    fileStats = await stat(study.dicomFilePath);
+  } catch {
+    throw new AppError(
+      404,
+      "DICOM_FILE_NOT_FOUND",
+      "The DICOM file could not be found.",
+    );
+  }
+
+  if (!fileStats.isFile()) {
+    throw new AppError(
+      404,
+      "DICOM_FILE_NOT_FOUND",
+      "The DICOM file could not be found.",
+    );
+  }
+
+  res.setHeader("Content-Type", "application/dicom");
+  res.setHeader("Content-Length", fileStats.size);
+
+  createReadStream(study.dicomFilePath).pipe(res);
 });

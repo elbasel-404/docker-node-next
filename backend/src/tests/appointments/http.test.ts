@@ -29,7 +29,7 @@ describe("appointment API", () => {
 
     expect(response.body.data).toMatchObject({
       patientName: "Demo Patient",
-      doctorId: doctorId,
+      doctor: { id: doctorId },
       status: "scheduled",
     });
   });
@@ -45,6 +45,45 @@ describe("appointment API", () => {
     expect(response.body.error).toMatchObject({
       code: "VALIDATION_ERROR",
     });
+  });
+
+  it("rejects a non-positive duration", async () => {
+    const response = await request(app).post("/api/appointments").send({
+      patientName: "Demo Patient",
+      doctorId: doctorId,
+      startsAt: "2026-10-02T10:00:00.000Z",
+      durationMinutes: 0,
+      reason: "Routine consultation",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("rejects an invalid doctor ID", async () => {
+    const response = await request(app).post("/api/appointments").send({
+      patientName: "Patient",
+      doctorId: "not-a-uuid",
+      startsAt: "2026-10-02T09:00:00.000Z",
+      durationMinutes: 30,
+      reason: "Checkup",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("rejects an invalid start date", async () => {
+    const response = await request(app).post("/api/appointments").send({
+      patientName: "Patient",
+      doctorId: doctorId,
+      startsAt: "not-a-date",
+      durationMinutes: 30,
+      reason: "Checkup",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe("VALIDATION_ERROR");
   });
 
   it("returns 409 for an overlapping appointment", async () => {

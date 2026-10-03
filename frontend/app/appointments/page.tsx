@@ -54,10 +54,7 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
 
   return (
     <main>
-      <header>
-        <h1>Appointments</h1>
-        <p>Manage today's clinic schedule.</p>
-      </header>
+      <h1>Appointments</h1>
 
       <AppointmentFilters
         date={date}
