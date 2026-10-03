@@ -11,21 +11,23 @@ import { Prisma } from "../prisma/generated/prisma/client";
 import { isAppointmentConflict } from "../utils/errorCheck";
 import { getClinicDayRange } from "../utils/timezone";
 
-function toAppointmentDto(
-  appointment: Prisma.AppointmentGetPayload<{
-    include: {
-      doctor: true;
-      imagingStudy: {
-        select: {
-          id: true;
-          appointmentId: true;
-          modality: true;
-          description: true;
-        };
-      };
-    };
-  }>,
-): Appointment {
+const appointmentInclude = {
+  doctor: true,
+  imagingStudy: {
+    select: {
+      id: true,
+      appointmentId: true,
+      modality: true,
+      description: true,
+    },
+  },
+} satisfies Prisma.AppointmentInclude;
+
+type AppointmentWithRelations = Prisma.AppointmentGetPayload<{
+  include: typeof appointmentInclude;
+}>;
+
+function toAppointmentDto(appointment: AppointmentWithRelations): Appointment {
   return {
     id: appointment.id,
     patientName: appointment.patientName,

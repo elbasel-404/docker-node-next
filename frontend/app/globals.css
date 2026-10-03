@@ -456,3 +456,350 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* =========================================
+   Appointment Form
+   ========================================= */
+
+.appointment-form-card {
+  max-width: 58rem;
+  margin-inline: auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Header */
+
+.form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 0.3rem;
+  color: var(--brand);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.form-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.35rem, 3vw, 1.7rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.form-description {
+  margin: 0.45rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.form-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  color: var(--brand-ink);
+  background: var(--brand);
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+/* Form */
+
+.appointment-form {
+  display: grid;
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.field label {
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.field label::after {
+  content: " *";
+  color: var(--danger);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.65rem 0.8rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.95rem;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.field textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: color-mix(in srgb, var(--muted) 65%, var(--line));
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 15%, transparent);
+}
+
+.field input:disabled,
+.field select:disabled,
+.field textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Duration */
+
+.input-with-suffix {
+  position: relative;
+}
+
+.input-with-suffix input {
+  padding-right: 3.5rem;
+}
+
+.input-with-suffix span {
+  position: absolute;
+  top: 50%;
+  right: 0.85rem;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Messages */
+
+.form-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.form-message-error {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 25%, transparent);
+}
+
+.form-message-success {
+  color: var(--ok);
+  background: var(--ok-soft);
+  border-color: color-mix(in srgb, var(--ok) 25%, transparent);
+}
+
+.message-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 1.35rem;
+  height: 1.35rem;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.form-message-error .message-icon {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 15%, transparent);
+}
+
+.form-message-success .message-icon {
+  color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 15%, transparent);
+}
+
+/* Actions */
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.required-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.required-hint span {
+  color: var(--danger);
+}
+
+.submit-btn {
+  min-width: 11rem;
+  min-height: 46px;
+  padding-inline: 1.1rem;
+  color: var(--brand-ink);
+  background: var(--brand);
+  border: 1px solid var(--brand);
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    filter 150ms ease,
+    opacity 150ms ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.button-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.45rem;
+  vertical-align: -0.15em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: button-spin 0.65s linear infinite;
+}
+
+@keyframes button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tablet */
+
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field-full {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .required-hint {
+    order: 2;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+}
+
+/* Small mobile */
+
+@media (max-width: 420px) {
+  .appointment-form-card {
+    border-radius: 12px;
+  }
+
+  .form-header {
+    padding: 1.1rem;
+  }
+
+  .appointment-form {
+    padding: 1.1rem;
+  }
+
+  .form-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 10px;
+  }
+
+  .form-grid {
+    gap: 1rem;
+  }
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .field input,
+  .field select,
+  .field textarea,
+  .submit-btn {
+    transition: none;
+  }
+
+  .button-spinner {
+    animation-duration: 2s;
+  }
+}

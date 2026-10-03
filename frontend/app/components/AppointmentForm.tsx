@@ -2,6 +2,7 @@
 
 import type { Doctor } from "@repo/shared";
 import { useState } from "react";
+import { toast } from "sonner";
 import { createAppointmentAction } from "../server/actions/createAppointmentAction";
 import { clinicDateTimeToIso } from "../utils/timezone";
 
@@ -18,15 +19,11 @@ export function AppointmentForm({ doctors, defaultDate }: Props) {
   const [durationMinutes, setDurationMinutes] = useState("30");
   const [reason, setReason] = useState("");
 
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setError(null);
-    setSuccess(null);
     setPending(true);
 
     try {
@@ -39,11 +36,11 @@ export function AppointmentForm({ doctors, defaultDate }: Props) {
       });
 
       if (!result.success) {
-        setError(result.message);
+        toast.error(result.message);
         return;
       }
 
-      setSuccess("Appointment created successfully.");
+      toast.success("Appointment created successfully.");
 
       setPatientName("");
       setReason("");
@@ -53,96 +50,142 @@ export function AppointmentForm({ doctors, defaultDate }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="patientName">Patient name</label>
+    <section className="appointment-form-card card">
+      <div className="form-header">
+        <div>
+          <p className="eyebrow">Appointments</p>
+          <h2 className="form-title">Create appointment</h2>
+          <p className="form-description">
+            Schedule a new patient appointment with a doctor.
+          </p>
+        </div>
 
-        <input
-          id="patientName"
-          value={patientName}
-          onChange={(event) => setPatientName(event.target.value)}
-          required
-        />
+        <div className="form-icon" aria-hidden="true">
+          +
+        </div>
       </div>
 
-      <div>
-        <label htmlFor="doctorId">Doctor</label>
+      <form className="appointment-form" onSubmit={handleSubmit}>
+        <div className="form-grid">
+          <div className="field field-full">
+            <label htmlFor="patientName">Patient name</label>
+            <input
+              className="input"
+              id="patientName"
+              value={patientName}
+              onChange={(event) => setPatientName(event.target.value)}
+              placeholder="Enter patient name"
+              autoComplete="name"
+              required
+            />
+          </div>
 
-        <select
-          id="doctorId"
-          value={doctorId}
-          onChange={(event) => setDoctorId(event.target.value)}
-          required
-        >
-          <option value="" disabled>
-            Select a doctor
-          </option>
+          <div className="field">
+            <label htmlFor="doctorId">Doctor</label>
 
-          {doctors.map((doctor) => (
-            <option key={doctor.id} value={doctor.id}>
-              {doctor.name}
-            </option>
-          ))}
-        </select>
-      </div>
+            <select
+              className="select"
+              id="doctorId"
+              value={doctorId}
+              onChange={(event) => setDoctorId(event.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Select a doctor
+              </option>
 
-      <div>
-        <label htmlFor="appointmentDate">Date</label>
+              {doctors.map((doctor) => (
+                <option key={doctor.id} value={doctor.id}>
+                  {doctor.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <input
-          id="appointmentDate"
-          type="date"
-          value={date}
-          onChange={(event) => setDate(event.target.value)}
-          required
-        />
-      </div>
+          <div className="field">
+            <label htmlFor="duration">Duration</label>
 
-      <div>
-        <label htmlFor="appointmentTime">Start time</label>
+            <div className="input-with-suffix">
+              <input
+                className="input"
+                id="duration"
+                type="number"
+                min="5"
+                max="480"
+                step="5"
+                value={durationMinutes}
+                onChange={(event) => setDurationMinutes(event.target.value)}
+                required
+              />
+              <span>min</span>
+            </div>
+          </div>
 
-        <input
-          id="appointmentTime"
-          type="time"
-          value={time}
-          onChange={(event) => setTime(event.target.value)}
-          required
-        />
-      </div>
+          <div className="field">
+            <label htmlFor="appointmentDate">Date</label>
 
-      <div>
-        <label htmlFor="duration">Duration (minutes)</label>
+            <input
+              className="input"
+              id="appointmentDate"
+              type="date"
+              value={date}
+              onChange={(event) => setDate(event.target.value)}
+              required
+            />
+          </div>
 
-        <input
-          id="duration"
-          type="number"
-          min="5"
-          max="480"
-          step="5"
-          value={durationMinutes}
-          onChange={(event) => setDurationMinutes(event.target.value)}
-          required
-        />
-      </div>
+          <div className="field">
+            <label htmlFor="appointmentTime">Start time</label>
 
-      <div>
-        <label htmlFor="reason">Reason</label>
+            <input
+              className="input"
+              id="appointmentTime"
+              type="time"
+              value={time}
+              onChange={(event) => setTime(event.target.value)}
+              required
+            />
+          </div>
 
-        <textarea
-          id="reason"
-          value={reason}
-          onChange={(event) => setReason(event.target.value)}
-          required
-        />
-      </div>
+          <div className="field field-full">
+            <label htmlFor="reason">Reason for visit</label>
 
-      {error && <p role="alert">{error}</p>}
+            <textarea
+              className="input textarea"
+              id="reason"
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              placeholder="Briefly describe the reason for the appointment..."
+              rows={4}
+              required
+            />
+          </div>
+        </div>
 
-      {success && <p role="status">{success}</p>}
+        <div className="form-actions">
+          <p className="required-hint">
+            <span>*</span> Required fields
+          </p>
 
-      <button type="submit" disabled={pending || doctors.length === 0}>
-        {pending ? "Creating..." : "Create appointment"}
-      </button>
-    </form>
+          <button
+            className="btn btn-primary submit-btn"
+            type="submit"
+            disabled={pending || doctors.length === 0}
+          >
+            {pending ? (
+              <>
+                <span className="button-spinner" aria-hidden="true" />
+                Creating...
+              </>
+            ) : (
+              <>
+                <span aria-hidden="true">+</span>
+                Create appointment
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+    </section>
   );
 }
