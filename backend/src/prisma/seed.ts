@@ -1,5 +1,17 @@
+import { fromZonedTime } from "date-fns-tz";
 import { AppointmentStatus } from "./generated/prisma/client";
 import { prisma } from "./client";
+
+const CLINIC_TIMEZONE = process.env.CLINIC_TIMEZONE ?? "Africa/Cairo";
+
+function getClinicDateKey(date = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: CLINIC_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -23,13 +35,14 @@ async function main() {
   ]);
 
   const [sarah, john, michael] = doctors;
+  const seedDate = getClinicDateKey();
 
   const appointmentOne = await prisma.appointment.create({
     data: {
       patientName: "Patient One",
       doctorId: sarah.id,
-      startsAt: new Date("2026-10-02T09:00:00+03:00"),
-      endsAt: new Date("2026-10-02T09:30:00+03:00"),
+      startsAt: fromZonedTime(`${seedDate}T09:00:00`, CLINIC_TIMEZONE),
+      endsAt: fromZonedTime(`${seedDate}T09:30:00`, CLINIC_TIMEZONE),
       status: AppointmentStatus.scheduled,
       reason: "Routine follow-up",
     },
@@ -39,8 +52,8 @@ async function main() {
     data: {
       patientName: "Patient Two",
       doctorId: sarah.id,
-      startsAt: new Date("2026-10-02T10:00:00+03:00"),
-      endsAt: new Date("2026-10-02T10:30:00+03:00"),
+      startsAt: fromZonedTime(`${seedDate}T10:00:00`, CLINIC_TIMEZONE),
+      endsAt: fromZonedTime(`${seedDate}T10:30:00`, CLINIC_TIMEZONE),
       status: AppointmentStatus.checked_in,
       reason: "General consultation",
     },
@@ -50,8 +63,8 @@ async function main() {
     data: {
       patientName: "Patient Three",
       doctorId: john.id,
-      startsAt: new Date("2026-10-02T11:00:00+03:00"),
-      endsAt: new Date("2026-10-02T11:45:00+03:00"),
+      startsAt: fromZonedTime(`${seedDate}T11:00:00`, CLINIC_TIMEZONE),
+      endsAt: fromZonedTime(`${seedDate}T11:45:00`, CLINIC_TIMEZONE),
       status: AppointmentStatus.completed,
       reason: "Follow-up examination",
     },
@@ -61,8 +74,8 @@ async function main() {
     data: {
       patientName: "Patient Four",
       doctorId: michael.id,
-      startsAt: new Date("2026-10-02T13:00:00+03:00"),
-      endsAt: new Date("2026-10-02T13:30:00+03:00"),
+      startsAt: fromZonedTime(`${seedDate}T13:00:00`, CLINIC_TIMEZONE),
+      endsAt: fromZonedTime(`${seedDate}T13:30:00`, CLINIC_TIMEZONE),
       status: AppointmentStatus.cancelled,
       reason: "Imaging appointment",
     },

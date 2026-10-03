@@ -5,6 +5,7 @@ import {
 } from "../components";
 import { getAppointments } from "../server/appointment";
 import { getDoctors } from "../server/doctor";
+import { CLINIC_TIMEZONE } from "../utils/timezone";
 
 type PageProps = {
   searchParams: Promise<{
@@ -23,7 +24,7 @@ const VALID_STATUSES = [
 
 function getTodayInClinicTimezone() {
   return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Africa/Cairo",
+    timeZone: CLINIC_TIMEZONE,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",

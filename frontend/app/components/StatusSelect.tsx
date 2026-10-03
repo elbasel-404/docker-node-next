@@ -1,41 +1,51 @@
 "use client";
 
 import { AppointmentStatus } from "@repo/shared";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { updateAppointmentStatusAction } from "../server/actions/updateStatusAction";
 
 type Props = {
   appointmentId: string;
   status: AppointmentStatus;
+  patientName: string;
 };
 
-export function StatusSelect({ appointmentId, status }: Props) {
-  const [pending, setPending] = useState(false);
-
+export function StatusSelect({ appointmentId, status, patientName }: Props) {
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   async function handleChange(nextStatus: AppointmentStatus) {
-    setPending(true);
     setError(null);
+    setSuccess(null);
 
-    try {
+    startTransition(async () => {
       const result = await updateAppointmentStatusAction(appointmentId, {
         status: nextStatus,
       });
 
       if (!result.success) {
         setError(result.message);
+        return;
       }
-    } finally {
-      setPending(false);
-    }
+
+      setSuccess("Status updated");
+    });
   }
 
   return (
     <div>
+      <label
+        htmlFor={`status-${appointmentId}`}
+        aria-label={`Status for ${patientName}`}
+      >
+        Status for {patientName}
+      </label>
+
       <select
+        id={`status-${appointmentId}`}
         value={status}
-        disabled={pending}
+        disabled={isPending}
         onChange={(event) =>
           handleChange(event.target.value as AppointmentStatus)
         }
@@ -50,6 +60,7 @@ export function StatusSelect({ appointmentId, status }: Props) {
       </select>
 
       {error && <span role="alert">{error}</span>}
+      {success && <span role="status">{success}</span>}
     </div>
   );
 }

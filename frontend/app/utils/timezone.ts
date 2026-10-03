@@ -1,6 +1,9 @@
 import { fromZonedTime, formatInTimeZone } from "date-fns-tz";
 
-export const CLINIC_TIMEZONE = process.env.CLINIC_TIMEZONE ?? "Africa/Cairo";
+export const CLINIC_TIMEZONE =
+  process.env.NEXT_PUBLIC_CLINIC_TIMEZONE ??
+  process.env.CLINIC_TIMEZONE ??
+  "Africa/Cairo";
 
 export function clinicDateTimeToIso(date: string, time: string) {
   return fromZonedTime(`${date}T${time}:00`, CLINIC_TIMEZONE).toISOString();

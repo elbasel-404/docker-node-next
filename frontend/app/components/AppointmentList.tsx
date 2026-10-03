@@ -54,13 +54,14 @@ export function AppointmentList({
               <StatusSelect
                 appointmentId={appointment.id}
                 status={appointment.status}
+                patientName={appointment.patientName}
               />
             </header>
 
             <div>
               <h3>{appointment.patientName}</h3>
 
-              <p>Dr. {appointment.doctor.name}</p>
+              <p>{appointment.doctor.name}</p>
 
               <p>{appointment.reason}</p>
             </div>

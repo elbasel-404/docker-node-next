@@ -15,8 +15,7 @@
     ".": "./src/index.ts",
     "./appointment": "./src/appointment.ts",
     "./doctor": "./src/doctor.ts",
-    "./imaging": "./src/imaging.ts",
-    "./api": "./src/api.ts"
+    "./imaging": "./src/imaging.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.3",

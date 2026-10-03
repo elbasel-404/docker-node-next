@@ -32,6 +32,11 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
     router.push(`/appointments?${params.toString()}`);
   }
 
+  function clearFilters() {
+    const params = new URLSearchParams();
+    router.push(`/appointments?${params.toString()}`);
+  }
+
   return (
     <section>
       <h2>Filters</h2>
@@ -83,14 +88,7 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
 
           <option value="cancelled">Cancelled</option>
         </select>
-        <button
-          onClick={() => {
-            updateFilter("date", "");
-            updateFilter("doctorId", "");
-            updateFilter("status", "");
-            router.push("/appointments");
-          }}
-        >
+        <button type="button" onClick={clearFilters}>
           clear filters
         </button>
       </div>

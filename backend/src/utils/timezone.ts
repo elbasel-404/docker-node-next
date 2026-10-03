@@ -1,9 +1,16 @@
 import { fromZonedTime } from "date-fns-tz";
 import { AppError } from "../errors/AppError.js";
 
-const CLINIC_TIMEZONE = process.env.CLINIC_TIMEZONE ?? "Africa/Cairo";
+const CLINIC_TIMEZONE = process.env.CLINIC_TIMEZONE;
 
 export function getClinicTimezone(): string {
+  if (!CLINIC_TIMEZONE) {
+    throw new AppError(
+      500,
+      "MISSING_CLINIC_TIMEZONE",
+      "Clinic timezone is not configured.",
+    );
+  }
   return CLINIC_TIMEZONE;
 }
 
@@ -26,7 +33,7 @@ export function getClinicDayRange(date: string): {
   }
 
   // Convert clinic-local midnight to a UTC instant
-  const start = fromZonedTime(`${date}T00:00:00`, CLINIC_TIMEZONE);
+  const start = fromZonedTime(`${date}T00:00:00`, getClinicTimezone());
 
   if (Number.isNaN(start.getTime())) {
     throw new AppError(400, "INVALID_DATE", "Invalid date.");
@@ -46,7 +53,7 @@ export function getClinicDayRange(date: string): {
     String(nextLocalDay.getUTCDate()).padStart(2, "0"),
   ].join("-");
 
-  const end = fromZonedTime(`${nextDateString}T00:00:00`, CLINIC_TIMEZONE);
+  const end = fromZonedTime(`${nextDateString}T00:00:00`, getClinicTimezone());
 
   return { start, end };
 }

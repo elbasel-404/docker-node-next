@@ -23,9 +23,7 @@ export function AppointmentForm({ doctors, defaultDate }: Props) {
   const [reason, setReason] = useState("");
 
   const [error, setError] = useState<string | null>(null);
-
   const [success, setSuccess] = useState<string | null>(null);
-
   const [pending, setPending] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -123,8 +121,9 @@ export function AppointmentForm({ doctors, defaultDate }: Props) {
         <input
           id="duration"
           type="number"
-          min="1"
-          step="1"
+          min="5"
+          max="480"
+          step="5"
           value={durationMinutes}
           onChange={(event) => setDurationMinutes(event.target.value)}
           required

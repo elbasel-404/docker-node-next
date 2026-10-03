@@ -20,10 +20,13 @@ export async function createAppointmentAction(
   const parsed = createAppointmentSchema.safeParse(input);
 
   if (!parsed.success) {
+    const firstMessage =
+      parsed.error.issues[0]?.message ?? "Invalid form data.";
+
     return {
       success: false,
       code: "VALIDATION_ERROR",
-      message: "Please correct the form fields.",
+      message: firstMessage,
     };
   }
 

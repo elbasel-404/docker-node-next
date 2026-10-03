@@ -9,9 +9,9 @@ import {
 
 import { prisma } from "../prisma/client.js";
 import { AppError } from "../errors/AppError.js";
+import { Prisma } from "../prisma/generated/prisma/client.js";
 import { isAppointmentConflict } from "../utils/errorCheck.js";
 import { getClinicDayRange } from "../utils/timezone.js";
-import type { Prisma } from "../prisma/generated/prisma/client.js";
 
 export async function listAppointments(input: AppointmentListQuery) {
   const query = appointmentListQuerySchema.parse(input);
@@ -165,16 +165,21 @@ export async function updateAppointmentStatus(
       },
     });
   } catch (error) {
-    // Prisma's not-found error is deliberately converted
-    // into our public API error shape.
-    if (
-      error instanceof Error &&
-      error.message.includes("No record was found for an update")
-    ) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        throw new AppError(
+          404,
+          "APPOINTMENT_NOT_FOUND",
+          "Appointment not found.",
+        );
+      }
+    }
+
+    if (isAppointmentConflict(error)) {
       throw new AppError(
-        404,
-        "APPOINTMENT_NOT_FOUND",
-        "Appointment not found.",
+        409,
+        "APPOINTMENT_CONFLICT",
+        "The doctor already has an appointment during this time.",
       );
     }
 

@@ -102,25 +102,25 @@ describe("Timezone-aware appointment filtering", () => {
     expect(appointments).toHaveLength(0);
   });
 
-  it("correctly handles DST boundaries", async () => {
-    // Cairo doesn't observe DST, but this documents the behavior.
-    // Just create a normal appointment in the middle of Oct 2.
+  it("keeps the clinic day length correct on the Cairo fallback day", async () => {
+    const date = "2026-10-31";
+
     await prisma.appointment.create({
       data: {
-        patientName: "Test Appointment",
+        patientName: "Fallback Day Appointment",
         doctorId,
-        startsAt: new Date("2026-10-02T10:00:00.000Z"),
-        endsAt: new Date("2026-10-02T10:30:00.000Z"),
-        reason: "Test",
+        startsAt: new Date("2026-10-30T22:00:00.000Z"),
+        endsAt: new Date("2026-10-30T22:30:00.000Z"),
+        reason: "Fallback day test",
       },
     });
 
     const appointments = await listAppointments({
-      date: "2026-10-02",
+      date,
       doctorId,
     });
 
     expect(appointments).toHaveLength(1);
-    expect(appointments[0]?.patientName).toBe("Test Appointment");
+    expect(appointments[0]?.patientName).toBe("Fallback Day Appointment");
   });
 });

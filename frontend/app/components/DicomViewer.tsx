@@ -5,6 +5,7 @@ import {
   imageLoader,
   metaData,
   RenderingEngine,
+  cache,
   type Types,
 } from "@cornerstonejs/core";
 import { init as cornerstoneInit } from "@cornerstonejs/core";
@@ -50,7 +51,6 @@ function formatStudyDate(value: string | null) {
     return "Unknown";
   }
 
-  // DICOM DA format: YYYYMMDD.
   if (/^\d{8}$/.test(value)) {
     return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}`;
   }
@@ -103,6 +103,7 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
   useEffect(() => {
     let cancelled = false;
     let resizeObserver: ResizeObserver | undefined;
+    let imageId: string | undefined;
 
     async function initialize() {
       try {
@@ -124,25 +125,18 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
           element: elementRef.current,
         });
 
-        const imageId = `wadouri:${new URL(
+        imageId = `wadouri:${new URL(
           fileUrl,
           window.location.origin,
         ).toString()}`;
 
-        /*
-         * Explicitly load the image.
-         *
-         * This gives us the IImage object for dimensions while also
-         * populating Cornerstone's metadata layer.
-         */
         const image = await imageLoader.loadAndCacheImage(imageId);
 
-        if (cancelled) {
+        if (cancelled || !elementRef.current) {
           return;
         }
 
         const dicomMetadata = readDicomMetadata(imageId, image);
-
         setMetadata(dicomMetadata);
 
         const viewport = renderingEngine.getViewport(
@@ -150,6 +144,10 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
         ) as Types.IStackViewport;
 
         await viewport.setStack([imageId]);
+
+        if (cancelled) {
+          return;
+        }
 
         viewport.resetCamera();
         viewport.render();
@@ -169,11 +167,19 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
         if (!cancelled) {
           setLoading(false);
         }
-      } catch {
-        if (!cancelled) {
-          setLoading(false);
-          setError("Unable to load the DICOM image.");
+      } catch (caughtError) {
+        if (cancelled) {
+          return;
         }
+
+        const message =
+          caughtError instanceof Error &&
+          /404|not found/i.test(caughtError.message)
+            ? "Unable to find the DICOM file."
+            : "The DICOM file could not be decoded or rendered.";
+
+        setLoading(false);
+        setError(message);
       }
     }
 
@@ -181,8 +187,11 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
 
     return () => {
       cancelled = true;
-
       resizeObserver?.disconnect();
+
+      if (imageId) {
+        cache.removeImageLoadObject(imageId);
+      }
 
       renderingEngineRef.current?.destroy();
       renderingEngineRef.current = null;
