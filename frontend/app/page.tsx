@@ -1,7 +1,8 @@
-import { getDoctors } from "./server/getDoctors";
+import { getDoctors } from "./server/lib/doctor";
 
 export default async function Home() {
-  const doctors = await getDoctors();
+  const { data: doctors } = await getDoctors();
+
   return (
     <div>
       {doctors.map((doctor: any) => (
