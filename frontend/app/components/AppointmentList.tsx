@@ -26,7 +26,7 @@ export function AppointmentList({
             <article className="appt" data-status={appointment.status}>
               <div className="appt-time">
                 {formatAppointmentTime(appointment.startsAt)}
-                {" – "}
+                {" - "}
                 <span>{formatAppointmentTime(appointment.endsAt)}</span>
               </div>
 
