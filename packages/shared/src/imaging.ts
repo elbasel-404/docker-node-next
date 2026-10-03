@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const imagingStudySchema = z.object({
-  id: z.string().uuid(),
-  appointmentId: z.string().uuid(),
+  id: z.uuid(),
+  appointmentId: z.uuid(),
   modality: z.string(),
   description: z.string().nullable(),
 });
