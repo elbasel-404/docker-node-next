@@ -22,7 +22,7 @@ export async function getAppointments(query: AppointmentListQuery) {
 
   const queryString = params.toString();
 
-  return request<{
+  type RequestType = {
     data: Array<{
       id: string;
       patientName: string;
@@ -42,11 +42,16 @@ export async function getAppointments(query: AppointmentListQuery) {
         description: string | null;
       } | null;
     }>;
-  }>(`/api/appointments${queryString ? `?${queryString}` : ""}`, {
-    next: {
-      tags: ["appointments"],
+  };
+
+  return request<RequestType>(
+    `/api/appointments${queryString ? `?${queryString}` : ""}`,
+    {
+      next: {
+        tags: ["appointments"],
+      },
     },
-  });
+  );
 }
 
 export async function createAppointment(input: CreateAppointmentInput) {
