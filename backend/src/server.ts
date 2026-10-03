@@ -1,4 +1,7 @@
 import app from "./app";
+import { validateStartupEnv } from "./config/env.js";
+
+validateStartupEnv();
 
 const PORT = process.env.PORT || 4000;
 

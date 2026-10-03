@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, type Router as ExpressRouter } from "express";
 
 import {
   appointmentListQuerySchema,
@@ -13,7 +13,7 @@ import {
   updateAppointmentStatus,
 } from "../services/appointmentService.js";
 
-export const appointmentsRouter = Router();
+export const appointmentsRouter: ExpressRouter = Router();
 
 appointmentsRouter.get("/", async (req, res, next) => {
   try {

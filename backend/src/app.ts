@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type Express } from "express";
 import cors from "cors";
 import { appointmentsRouter } from "./routes/appointments";
 import { errorHandler } from "./middleware/errorHandler";
@@ -6,7 +6,7 @@ import { doctorsRouter } from "./routes/doctors";
 import { imagingStudiesRouter } from "./routes/imagingStudies";
 import { notFound } from "./middleware/notFound";
 
-const app = express();
+const app: Express = express();
 
 app.use(
   cors({

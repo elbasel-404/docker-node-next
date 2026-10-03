@@ -1,7 +1,7 @@
-import { Router } from "express";
+import { Router, type Router as ExpressRouter } from "express";
 import { listDoctors } from "../services/doctorsService";
 
-export const doctorsRouter = Router();
+export const doctorsRouter: ExpressRouter = Router();
 
 doctorsRouter.get("/", async (_req, res, next) => {
   try {

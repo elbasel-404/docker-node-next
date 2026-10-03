@@ -35,10 +35,7 @@ export function StatusSelect({ appointmentId, status, patientName }: Props) {
 
   return (
     <div>
-      <label
-        htmlFor={`status-${appointmentId}`}
-        aria-label={`Status for ${patientName}`}
-      >
+      <label htmlFor={`status-${appointmentId}`}>
         Status for {patientName}
       </label>
 

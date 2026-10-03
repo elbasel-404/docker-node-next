@@ -88,6 +88,14 @@ function readDicomMetadata(
   };
 }
 
+async function checkFileExists(fileUrl: string) {
+  const response = await fetch(fileUrl, { method: "HEAD" });
+
+  if (response.status === 404) {
+    throw new Error("FILE_NOT_FOUND");
+  }
+}
+
 export function DicomViewer({ fileUrl, modality, description }: Props) {
   const elementRef = useRef<HTMLDivElement | null>(null);
   const renderingEngineRef = useRef<RenderingEngine | null>(null);
@@ -116,6 +124,12 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
           return;
         }
 
+        const absoluteFileUrl = new URL(
+          fileUrl,
+          window.location.origin,
+        ).toString();
+        await checkFileExists(absoluteFileUrl);
+
         const renderingEngine = new RenderingEngine(RENDERING_ENGINE_ID);
         renderingEngineRef.current = renderingEngine;
 
@@ -125,14 +139,14 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
           element: elementRef.current,
         });
 
-        imageId = `wadouri:${new URL(
-          fileUrl,
-          window.location.origin,
-        ).toString()}`;
+        imageId = `wadouri:${absoluteFileUrl}`;
 
         const image = await imageLoader.loadAndCacheImage(imageId);
 
         if (cancelled || !elementRef.current) {
+          if (imageId) {
+            cache.removeImageLoadObject(imageId);
+          }
           return;
         }
 
@@ -146,6 +160,9 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
         await viewport.setStack([imageId]);
 
         if (cancelled) {
+          if (imageId) {
+            cache.removeImageLoadObject(imageId);
+          }
           return;
         }
 
@@ -174,7 +191,7 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
 
         const message =
           caughtError instanceof Error &&
-          /404|not found/i.test(caughtError.message)
+          caughtError.message === "FILE_NOT_FOUND"
             ? "Unable to find the DICOM file."
             : "The DICOM file could not be decoded or rendered.";
 
@@ -318,9 +335,7 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
             <div>
               <strong>Dimensions</strong>
               <div>
-                {metadata.rows && metadata.columns
-                  ? `${metadata.columns} × ${metadata.rows}`
-                  : "Unknown"}
+                {metadata.rows} x {metadata.columns}
               </div>
             </div>
           </div>
@@ -328,13 +343,13 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
           <div
             style={{
               display: "flex",
-              gap: "0.5rem",
+              gap: "0.75rem",
+              flexWrap: "wrap",
             }}
           >
             <button type="button" onClick={handleFit}>
               Fit
             </button>
-
             <button type="button" onClick={handleReset}>
               Reset
             </button>
