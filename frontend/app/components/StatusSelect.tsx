@@ -42,30 +42,41 @@ export function StatusSelect({ appointmentId, status, patientName }: Props) {
   }
 
   return (
-    <div>
-      <label htmlFor={`status-${appointmentId}`}>
+    <div className="status">
+      <label className="sr-only" htmlFor={`status-${appointmentId}`}>
         Status for {patientName}
       </label>
 
-      <select
-        id={`status-${appointmentId}`}
-        value={status}
-        disabled={isPending}
-        onChange={(event) =>
-          handleChange(event.target.value as AppointmentStatus)
-        }
-      >
-        <option value="scheduled">Scheduled</option>
+      <div className="status-control" data-status={status}>
+        <select
+          className="select"
+          id={`status-${appointmentId}`}
+          value={status}
+          disabled={isPending}
+          onChange={(event) =>
+            handleChange(event.target.value as AppointmentStatus)
+          }
+        >
+          <option value="scheduled">Scheduled</option>
+          <option value="checked_in">Checked in</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
 
-        <option value="checked_in">Checked in</option>
-
-        <option value="completed">Completed</option>
-
-        <option value="cancelled">Cancelled</option>
-      </select>
-
-      {error && <span role="alert">{error}</span>}
-      {success && <span role="status">{success}</span>}
+      <div className="status-msg">
+        {isPending && <span className="muted">Saving…</span>}
+        {error && (
+          <span className="error" role="alert">
+            {error}
+          </span>
+        )}
+        {success && (
+          <span className="ok" role="status">
+            {success}
+          </span>
+        )}
+      </div>
     </div>
   );
 }

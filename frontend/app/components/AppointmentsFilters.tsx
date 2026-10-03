@@ -41,58 +41,51 @@ export function AppointmentFilters({ date, doctorId, status, doctors }: Props) {
   }
 
   return (
-    <section>
-      <h2>Filters</h2>
+    <section className="card" aria-label="Filter appointments">
+      <div className="filters" aria-busy={isPending}>
+        <div className="field">
+          <label htmlFor="filter-date">Date</label>
+          <input
+            id="filter-date"
+            type="date"
+            value={date}
+            onChange={(event) => updateFilter("date", event.target.value)}
+          />
+        </div>
 
-      <div>
-        <label htmlFor="filter-date">Date</label>
+        <div className="field">
+          <label htmlFor="filter-doctor">Doctor</label>
+          <select
+            id="filter-doctor"
+            value={doctorId ?? ""}
+            onChange={(event) => updateFilter("doctorId", event.target.value)}
+          >
+            <option value="">All doctors</option>
+            {doctors.map((doctor) => (
+              <option key={doctor.id} value={doctor.id}>
+                {doctor.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <input
-          id="filter-date"
-          type="date"
-          value={date}
-          onChange={(event) => updateFilter("date", event.target.value)}
-        />
-      </div>
+        <div className="field">
+          <label htmlFor="filter-status">Status</label>
+          <select
+            id="filter-status"
+            value={status ?? ""}
+            onChange={(event) => updateFilter("status", event.target.value)}
+          >
+            <option value="">All statuses</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="checked_in">Checked in</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
 
-      <div>
-        <label htmlFor="filter-doctor">Doctor</label>
-
-        <select
-          id="filter-doctor"
-          value={doctorId ?? ""}
-          onChange={(event) => updateFilter("doctorId", event.target.value)}
-        >
-          <option value="">All doctors</option>
-
-          {doctors.map((doctor) => (
-            <option key={doctor.id} value={doctor.id}>
-              {doctor.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="filter-status">Status</label>
-
-        <select
-          id="filter-status"
-          value={status ?? ""}
-          onChange={(event) => updateFilter("status", event.target.value)}
-        >
-          <option value="">All statuses</option>
-
-          <option value="scheduled">Scheduled</option>
-
-          <option value="checked_in">Checked in</option>
-
-          <option value="completed">Completed</option>
-
-          <option value="cancelled">Cancelled</option>
-        </select>
-        <button type="button" onClick={clearFilters}>
-          clear filters
+        <button type="button" className="btn" onClick={clearFilters}>
+          Clear filters
         </button>
       </div>
     </section>

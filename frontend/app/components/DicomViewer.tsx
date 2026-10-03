@@ -205,9 +205,11 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
         }
 
         const message =
-          caughtError instanceof Error && caughtError.message === "FILE_NOT_FOUND"
+          caughtError instanceof Error &&
+          caughtError.message === "FILE_NOT_FOUND"
             ? "Unable to find the DICOM file."
-            : caughtError instanceof Error && caughtError.message === "FILE_LOAD_FAILED"
+            : caughtError instanceof Error &&
+                caughtError.message === "FILE_LOAD_FAILED"
               ? "The DICOM file could not be loaded."
               : "The DICOM file could not be decoded or rendered.";
 
@@ -272,106 +274,63 @@ export function DicomViewer({ fileUrl, modality, description }: Props) {
     viewport.render();
   }
 
+  const ready = !loading && !error;
+
   return (
-    <section>
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          minHeight: "500px",
-          height: "70vh",
-          background: "#000",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          ref={elementRef}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        />
+    <section className="viewer">
+      <div className="viewer-stage">
+        <div ref={elementRef} className="viewer-canvas" />
 
         {loading && (
-          <div
-            role="status"
-            aria-live="polite"
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "grid",
-              placeItems: "center",
-              color: "#fff",
-            }}
-          >
+          <div className="viewer-overlay" role="status" aria-live="polite">
+            <div className="spinner" aria-hidden="true" />
             Loading scan…
           </div>
         )}
 
         {error && (
-          <div
-            role="alert"
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "grid",
-              placeItems: "center",
-              color: "#fff",
-            }}
-          >
+          <div className="viewer-overlay error" role="alert">
             {error}
+          </div>
+        )}
+
+        {ready && (
+          <div className="viewer-toolbar">
+            <button type="button" className="btn" onClick={handleFit}>
+              Fit
+            </button>
+            <button type="button" className="btn" onClick={handleReset}>
+              Reset
+            </button>
           </div>
         )}
       </div>
 
-      {!loading && !error && (
-        <>
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              padding: "1rem 0",
-              flexWrap: "wrap",
-            }}
-          >
-            <div>
-              <strong>Modality</strong>
-              <div>{modality}</div>
-            </div>
-            <div>
-              <strong>Description</strong>
-              <div>{description ?? "None"}</div>
-            </div>
-
-            <div>
-              <strong>Study date</strong>
-              <div>{formatStudyDate(metadata.studyDate)}</div>
-            </div>
-
-            <div>
-              <strong>Dimensions</strong>
-              <div>
-                {(metadata.columns ?? "Unknown")} × {(metadata.rows ?? "Unknown")}
-              </div>
-            </div>
+      <aside className="card" aria-label="Scan details">
+        <h2 className="section-title">Scan details</h2>
+        <dl className="info">
+          <div>
+            <dt>Modality</dt>
+            <dd>{modality}</dd>
           </div>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "0.75rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <button type="button" onClick={handleFit}>
-              Fit
-            </button>
-            <button type="button" onClick={handleReset}>
-              Reset
-            </button>
+          <div>
+            <dt>Description</dt>
+            <dd>{description ?? "None"}</dd>
           </div>
-        </>
-      )}
+          <div>
+            <dt>Study date</dt>
+            <dd>{ready ? formatStudyDate(metadata.studyDate) : "—"}</dd>
+          </div>
+          <div>
+            <dt>Dimensions</dt>
+            <dd>
+              {ready
+                ? `${metadata.columns ?? "Unknown"} × ${metadata.rows ?? "Unknown"}`
+                : "—"}
+            </dd>
+          </div>
+        </dl>
+      </aside>
     </section>
   );
 }

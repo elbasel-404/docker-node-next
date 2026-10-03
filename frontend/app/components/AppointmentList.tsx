@@ -11,52 +11,51 @@ export function AppointmentList({
 }) {
   if (appointments.length === 0) {
     return (
-      <section>
-        <h2>Appointments</h2>
-        <p>No appointments match the selected filters.</p>
+      <section className="card empty">
+        <strong>No appointments found</strong>
+        Try another date or clear the filters.
       </section>
     );
   }
 
   return (
-    <section>
-      <h2>Appointments</h2>
-
-      <div>
+    <section aria-label="Appointments">
+      <ul className="appt-list">
         {appointments.map((appointment) => (
-          <article key={appointment.id}>
-            <header>
-              <div>
-                <strong>{formatAppointmentTime(appointment.startsAt)}</strong>
-
+          <li key={appointment.id}>
+            <article className="appt" data-status={appointment.status}>
+              <div className="appt-time">
+                {formatAppointmentTime(appointment.startsAt)}
                 {" – "}
-
                 <span>{formatAppointmentTime(appointment.endsAt)}</span>
               </div>
 
-              <StatusSelect
-                appointmentId={appointment.id}
-                status={appointment.status}
-                patientName={appointment.patientName}
-              />
-            </header>
+              <div>
+                <h3 className="appt-patient">{appointment.patientName}</h3>
+                <p className="appt-meta">{appointment.doctor.name}</p>
+                <p className="appt-meta">{appointment.reason}</p>
+              </div>
 
-            <div>
-              <h3>{appointment.patientName}</h3>
+              <div className="appt-footer">
+                <StatusSelect
+                  appointmentId={appointment.id}
+                  status={appointment.status}
+                  patientName={appointment.patientName}
+                />
 
-              <p>{appointment.doctor.name}</p>
-
-              <p>{appointment.reason}</p>
-            </div>
-
-            {appointment.imagingStudy && (
-              <Link href={`/appointments/${appointment.id}/scan`}>
-                View scan
-              </Link>
-            )}
-          </article>
+                {appointment.imagingStudy && (
+                  <Link
+                    className="btn btn-primary"
+                    href={`/appointments/${appointment.id}/scan`}
+                  >
+                    View scan
+                  </Link>
+                )}
+              </div>
+            </article>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }

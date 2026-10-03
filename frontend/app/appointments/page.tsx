@@ -43,18 +43,13 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
     : undefined;
 
   const [appointmentsResponse, doctorsResponse] = await Promise.all([
-    getAppointments({
-      date,
-      doctorId,
-      status,
-    }),
-
+    getAppointments({ date, doctorId, status }),
     getDoctors(),
   ]);
 
   return (
-    <main>
-      <h1>Appointments</h1>
+    <main className="page">
+      <h1 className="page-title">Appointments</h1>
 
       <AppointmentFilters
         date={date}
@@ -65,8 +60,10 @@ export default async function AppointmentsPage({ searchParams }: PageProps) {
 
       <AppointmentList appointments={appointmentsResponse.data} />
 
-      <hr />
-      <AppointmentForm defaultDate={date} doctors={doctorsResponse.data} />
+      <section className="card">
+        <h2 className="section-title">New appointment</h2>
+        <AppointmentForm defaultDate={date} doctors={doctorsResponse.data} />
+      </section>
     </main>
   );
 }

@@ -39,8 +39,12 @@ export default async function ScanPage({ params }: Props) {
   const study = imagingResponse.data;
 
   return (
-    <main>
-      <Link href="/appointments">← Back to appointments</Link>
+    <main className="page">
+      <Link className="back-link" href="/appointments">
+        ← Back to appointments
+      </Link>
+
+      <h1 className="page-title">Scan for {appointment.patientName}</h1>
 
       <DicomViewer
         fileUrl={`/api/imaging-studies/${study.id}/file`}
