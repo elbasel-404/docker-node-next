@@ -17,7 +17,7 @@ async function forwardFileRequest(
 
   try {
     const response = await fetch(
-      `${BACKEND_URL}/api/imaging-studies/${id}/file`,
+      `${BACKEND_URL}/api/imaging-studies/${encodeURIComponent(id)}/file`,
       {
         cache: "no-store",
         method,

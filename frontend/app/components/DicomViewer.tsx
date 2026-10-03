@@ -89,7 +89,13 @@ function readDicomMetadata(
 }
 
 async function checkFileExists(fileUrl: string) {
-  const response = await fetch(fileUrl, { method: "HEAD" });
+  let response: Response;
+
+  try {
+    response = await fetch(fileUrl, { method: "HEAD" });
+  } catch {
+    throw new Error("FILE_LOAD_FAILED");
+  }
 
   if (response.status === 404) {
     throw new Error("FILE_NOT_FOUND");
