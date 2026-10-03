@@ -8,39 +8,72 @@ type Params = {
   }>;
 };
 
-export async function GET(_request: Request, { params }: Params) {
+async function forwardFileRequest(
+  request: Request,
+  { params }: Params,
+  method: "GET" | "HEAD",
+) {
   const { id } = await params;
 
-  const response = await fetch(
-    `${BACKEND_URL}/api/imaging-studies/${id}/file`,
-    {
-      cache: "no-store",
-    },
-  );
+  try {
+    const response = await fetch(
+      `${BACKEND_URL}/api/imaging-studies/${id}/file`,
+      {
+        cache: "no-store",
+        method,
+      },
+    );
 
-  if (!response.ok) {
-    return new NextResponse("Unable to retrieve DICOM file.", {
-      status: response.status,
+    if (!response.ok) {
+      return new NextResponse(
+        method === "GET" ? "Unable to retrieve DICOM file." : null,
+        {
+          status: response.status,
+        },
+      );
+    }
+
+    if (method === "HEAD") {
+      return new NextResponse(null, {
+        status: 200,
+        headers: {
+          "Content-Type":
+            response.headers.get("content-type") ?? "application/dicom",
+          "Cache-Control": "private, no-store",
+        },
+      });
+    }
+
+    const headers = new Headers();
+
+    headers.set(
+      "Content-Type",
+      response.headers.get("content-type") ?? "application/dicom",
+    );
+
+    const contentLength = response.headers.get("content-length");
+
+    if (contentLength) {
+      headers.set("Content-Length", contentLength);
+    }
+
+    headers.set("Cache-Control", "private, no-store");
+
+    return new NextResponse(response.body, {
+      status: 200,
+      headers,
+    });
+  } catch {
+    return new NextResponse(null, {
+      status: 502,
     });
   }
+}
 
-  const headers = new Headers();
+export async function GET(request: Request, context: Params) {
+  return forwardFileRequest(request, context, "GET");
+}
 
-  headers.set(
-    "Content-Type",
-    response.headers.get("content-type") ?? "application/dicom",
-  );
-
-  const contentLength = response.headers.get("content-length");
-
-  if (contentLength) {
-    headers.set("Content-Length", contentLength);
-  }
-
-  headers.set("Cache-Control", "private, no-store");
-
-  return new NextResponse(response.body, {
-    status: 200,
-    headers,
-  });
+export async function HEAD(request: Request, context: Params) {
+  return forwardFileRequest(request, context, "HEAD");
 }
