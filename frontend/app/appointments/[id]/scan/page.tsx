@@ -29,23 +29,11 @@ export default async function ScanPage({ params }: Props) {
     <main>
       <Link href="/appointments">← Back to appointments</Link>
 
-      <header>
-        <h1>View scan</h1>
-
-        <dl>
-          <div>
-            <dt>Modality</dt>
-            <dd>{study.modality}</dd>
-          </div>
-
-          <div>
-            <dt>Description</dt>
-            <dd>{study.description ?? "—"}</dd>
-          </div>
-        </dl>
-      </header>
-
-      <DicomViewer fileUrl={`/api/imaging-studies/${study.id}/file`} />
+      <DicomViewer
+        fileUrl={`/api/imaging-studies/${study.id}/file`}
+        modality={study.modality}
+        description={study.description ?? null}
+      />
     </main>
   );
 }

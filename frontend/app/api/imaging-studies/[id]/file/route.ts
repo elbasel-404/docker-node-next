@@ -24,12 +24,23 @@ export async function GET(_request: Request, { params }: Params) {
     });
   }
 
+  const headers = new Headers();
+
+  headers.set(
+    "Content-Type",
+    response.headers.get("content-type") ?? "application/dicom",
+  );
+
+  const contentLength = response.headers.get("content-length");
+
+  if (contentLength) {
+    headers.set("Content-Length", contentLength);
+  }
+
+  headers.set("Cache-Control", "private, no-store");
+
   return new NextResponse(response.body, {
     status: 200,
-    headers: {
-      "Content-Type":
-        response.headers.get("content-type") ?? "application/dicom",
-      "Cache-Control": "private, no-store",
-    },
+    headers,
   });
 }
