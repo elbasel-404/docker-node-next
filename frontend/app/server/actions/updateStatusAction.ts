@@ -3,9 +3,9 @@ import {
   UpdateAppointmentStatusInput,
   updateAppointmentStatusSchema,
 } from "@repo/shared";
-import { updateAppointmentStatus } from "./lib/appointment";
 import { revalidatePath } from "next/cache";
-import { ApiRequestError } from "./lib/ApiRequestError";
+import { updateAppointmentStatus } from "../appointment";
+import { ApiRequestError } from "../ApiRequestError";
 
 export type UpdateStatusActionState =
   | {

@@ -1,8 +1,8 @@
 "use server";
 import { CreateAppointmentInput, createAppointmentSchema } from "@repo/shared";
-import { createAppointment } from "./lib/appointment";
 import { revalidatePath } from "next/cache";
-import { ApiRequestError } from "./lib/ApiRequestError";
+import { ApiRequestError } from "../ApiRequestError";
+import { createAppointment } from "../appointment";
 
 export type CreateAppointmentActionState =
   | {

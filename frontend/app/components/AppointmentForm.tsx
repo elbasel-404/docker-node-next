@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createAppointmentAction } from "../server/createAppointmentAction";
+import { createAppointmentAction } from "../server/actions/createAppointmentAction";
 import { clinicDateTimeToIso } from "../utils/timezone";
 
 type Doctor = {

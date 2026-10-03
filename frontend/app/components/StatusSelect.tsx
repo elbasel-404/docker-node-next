@@ -2,7 +2,7 @@
 
 import { AppointmentStatus } from "@repo/shared";
 import { useState } from "react";
-import { updateAppointmentStatusAction } from "../server/updateStatusAction";
+import { updateAppointmentStatusAction } from "../server/actions/updateStatusAction";
 
 type Props = {
   appointmentId: string;
